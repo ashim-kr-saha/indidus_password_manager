@@ -1,0 +1,22 @@
+[package]
+name = "sqlite_backup"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+aes = "0.8.4"
+block-modes = "0.9.1"
+cbc = "0.1.2"
+chrono = "0.4.39"
+env_logger = "0.11.5"
+flate2 = "1.0"
+log = "0.4"
+rand = "0.8.5"
+rusqlite = "0.32.1"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0.129"
+thiserror = "2.0.6"
+tokio = { version = "1", features = ["full"] }
+
+[dev-dependencies]
+tempfile = "3.3"

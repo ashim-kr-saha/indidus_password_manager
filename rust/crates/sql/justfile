@@ -1,0 +1,8 @@
+ts:
+  cargo test --package sql --lib -- sqlite_query_builder::tests --show-output
+
+th:
+  cargo test --package sql --lib -- http_query::tests --show-output
+
+test:
+  cargo test --package sql --lib -- --show-output
