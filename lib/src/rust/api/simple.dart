@@ -4,7 +4,147 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
 import '../frb_generated.dart';
+import '../models/financial_cards.dart';
+import '../models/identity_cards.dart';
+import '../models/logins.dart';
+import '../models/notes.dart';
+import '../models/others/authentication.dart';
+import '../models/tags.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 String greet({required String name}) =>
     RustLib.instance.api.crateApiSimpleGreet(name: name);
+
+Future<String> encryptData({required String data, required String password}) =>
+    RustLib.instance.api
+        .crateApiSimpleEncryptData(data: data, password: password);
+
+Future<String> decryptData({required String data, required String password}) =>
+    RustLib.instance.api
+        .crateApiSimpleDecryptData(data: data, password: password);
+
+Future<(bool, String)> init({required String dbPath}) =>
+    RustLib.instance.api.crateApiSimpleInit(dbPath: dbPath);
+
+Future<bool> isDatabaseInitialized() =>
+    RustLib.instance.api.crateApiSimpleIsDatabaseInitialized();
+
+Future<JwtTokens> register({required RegisterData user}) =>
+    RustLib.instance.api.crateApiSimpleRegister(user: user);
+
+Future<JwtTokens> login({required LoginData user}) =>
+    RustLib.instance.api.crateApiSimpleLogin(user: user);
+
+Future<FinancialCard> getFinancialCard(
+        {required String id, required String token}) =>
+    RustLib.instance.api.crateApiSimpleGetFinancialCard(id: id, token: token);
+
+Future<FinancialCard> postFinancialCard(
+        {required FinancialCard data, required String token}) =>
+    RustLib.instance.api
+        .crateApiSimplePostFinancialCard(data: data, token: token);
+
+Future<FinancialCard> putFinancialCard(
+        {required String id,
+        required FinancialCard data,
+        required String token}) =>
+    RustLib.instance.api
+        .crateApiSimplePutFinancialCard(id: id, data: data, token: token);
+
+Future<FinancialCard> deleteFinancialCard(
+        {required String id, required String token}) =>
+    RustLib.instance.api
+        .crateApiSimpleDeleteFinancialCard(id: id, token: token);
+
+Future<List<FinancialCard>> listFinancialCard(
+        {required String query, required String token}) =>
+    RustLib.instance.api
+        .crateApiSimpleListFinancialCard(query: query, token: token);
+
+Future<IdentityCard> getIdentityCard(
+        {required String id, required String token}) =>
+    RustLib.instance.api.crateApiSimpleGetIdentityCard(id: id, token: token);
+
+Future<IdentityCard> postIdentityCard(
+        {required IdentityCard data, required String token}) =>
+    RustLib.instance.api
+        .crateApiSimplePostIdentityCard(data: data, token: token);
+
+Future<IdentityCard> putIdentityCard(
+        {required String id,
+        required IdentityCard data,
+        required String token}) =>
+    RustLib.instance.api
+        .crateApiSimplePutIdentityCard(id: id, data: data, token: token);
+
+Future<IdentityCard> deleteIdentityCard(
+        {required String id, required String token}) =>
+    RustLib.instance.api.crateApiSimpleDeleteIdentityCard(id: id, token: token);
+
+Future<List<IdentityCard>> listIdentityCard(
+        {required String query, required String token}) =>
+    RustLib.instance.api
+        .crateApiSimpleListIdentityCard(query: query, token: token);
+
+Future<Login> getLogin({required String id, required String token}) =>
+    RustLib.instance.api.crateApiSimpleGetLogin(id: id, token: token);
+
+Future<Login> postLogin({required Login data, required String token}) =>
+    RustLib.instance.api.crateApiSimplePostLogin(data: data, token: token);
+
+Future<Login> putLogin(
+        {required String id, required Login data, required String token}) =>
+    RustLib.instance.api
+        .crateApiSimplePutLogin(id: id, data: data, token: token);
+
+Future<Login> deleteLogin({required String id, required String token}) =>
+    RustLib.instance.api.crateApiSimpleDeleteLogin(id: id, token: token);
+
+Future<List<Login>> listLogin({required String query, required String token}) =>
+    RustLib.instance.api.crateApiSimpleListLogin(query: query, token: token);
+
+Future<Note> getNote({required String id, required String token}) =>
+    RustLib.instance.api.crateApiSimpleGetNote(id: id, token: token);
+
+Future<Note> postNote({required Note data, required String token}) =>
+    RustLib.instance.api.crateApiSimplePostNote(data: data, token: token);
+
+Future<Note> putNote(
+        {required String id, required Note data, required String token}) =>
+    RustLib.instance.api
+        .crateApiSimplePutNote(id: id, data: data, token: token);
+
+Future<Note> deleteNote({required String id, required String token}) =>
+    RustLib.instance.api.crateApiSimpleDeleteNote(id: id, token: token);
+
+Future<List<Note>> listNote({required String query, required String token}) =>
+    RustLib.instance.api.crateApiSimpleListNote(query: query, token: token);
+
+Future<Tag> getTag({required String id, required String token}) =>
+    RustLib.instance.api.crateApiSimpleGetTag(id: id, token: token);
+
+Future<Tag> createTag({required Tag tag, required String token}) =>
+    RustLib.instance.api.crateApiSimpleCreateTag(tag: tag, token: token);
+
+Future<Tag> putTag(
+        {required String id, required Tag tag, required String token}) =>
+    RustLib.instance.api.crateApiSimplePutTag(id: id, tag: tag, token: token);
+
+Future<Tag> deleteTag({required String id, required String token}) =>
+    RustLib.instance.api.crateApiSimpleDeleteTag(id: id, token: token);
+
+Future<List<Tag>> listTags({required String query, required String token}) =>
+    RustLib.instance.api.crateApiSimpleListTags(query: query, token: token);
+
+Future<bool?> toggleFavorite({required String id, required String itemType}) =>
+    RustLib.instance.api
+        .crateApiSimpleToggleFavorite(id: id, itemType: itemType);
+
+Future<String> exportAllDataToJson() =>
+    RustLib.instance.api.crateApiSimpleExportAllDataToJson();
+
+Future<void> restoreDataFromJson({required String data}) =>
+    RustLib.instance.api.crateApiSimpleRestoreDataFromJson(data: data);
+
+Future<void> backupDataToServer() =>
+    RustLib.instance.api.crateApiSimpleBackupDataToServer();

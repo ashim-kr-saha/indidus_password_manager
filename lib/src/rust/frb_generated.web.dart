@@ -10,6 +10,12 @@ import 'api/simple.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.dart';
+import 'models/financial_cards.dart';
+import 'models/identity_cards.dart';
+import 'models/logins.dart';
+import 'models/notes.dart';
+import 'models/others/authentication.dart';
+import 'models/tags.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_web.dart';
 
 abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
@@ -21,10 +27,97 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   });
 
   @protected
+  AnyhowException dco_decode_AnyhowException(dynamic raw);
+
+  @protected
   String dco_decode_String(dynamic raw);
 
   @protected
+  bool dco_decode_bool(dynamic raw);
+
+  @protected
+  bool dco_decode_box_autoadd_bool(dynamic raw);
+
+  @protected
+  FinancialCard dco_decode_box_autoadd_financial_card(dynamic raw);
+
+  @protected
+  PlatformInt64 dco_decode_box_autoadd_i_64(dynamic raw);
+
+  @protected
+  IdentityCard dco_decode_box_autoadd_identity_card(dynamic raw);
+
+  @protected
+  Login dco_decode_box_autoadd_login(dynamic raw);
+
+  @protected
+  LoginData dco_decode_box_autoadd_login_data(dynamic raw);
+
+  @protected
+  Note dco_decode_box_autoadd_note(dynamic raw);
+
+  @protected
+  RegisterData dco_decode_box_autoadd_register_data(dynamic raw);
+
+  @protected
+  Tag dco_decode_box_autoadd_tag(dynamic raw);
+
+  @protected
+  FinancialCard dco_decode_financial_card(dynamic raw);
+
+  @protected
+  PlatformInt64 dco_decode_i_64(dynamic raw);
+
+  @protected
+  IdentityCard dco_decode_identity_card(dynamic raw);
+
+  @protected
+  JwtTokens dco_decode_jwt_tokens(dynamic raw);
+
+  @protected
+  List<FinancialCard> dco_decode_list_financial_card(dynamic raw);
+
+  @protected
+  List<IdentityCard> dco_decode_list_identity_card(dynamic raw);
+
+  @protected
+  List<Login> dco_decode_list_login(dynamic raw);
+
+  @protected
+  List<Note> dco_decode_list_note(dynamic raw);
+
+  @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
+
+  @protected
+  List<Tag> dco_decode_list_tag(dynamic raw);
+
+  @protected
+  Login dco_decode_login(dynamic raw);
+
+  @protected
+  LoginData dco_decode_login_data(dynamic raw);
+
+  @protected
+  Note dco_decode_note(dynamic raw);
+
+  @protected
+  String? dco_decode_opt_String(dynamic raw);
+
+  @protected
+  bool? dco_decode_opt_box_autoadd_bool(dynamic raw);
+
+  @protected
+  PlatformInt64? dco_decode_opt_box_autoadd_i_64(dynamic raw);
+
+  @protected
+  (bool, String) dco_decode_record_bool_string(dynamic raw);
+
+  @protected
+  RegisterData dco_decode_register_data(dynamic raw);
+
+  @protected
+  Tag dco_decode_tag(dynamic raw);
 
   @protected
   int dco_decode_u_8(dynamic raw);
@@ -33,10 +126,102 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void dco_decode_unit(dynamic raw);
 
   @protected
+  AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer);
+
+  @protected
   String sse_decode_String(SseDeserializer deserializer);
 
   @protected
+  bool sse_decode_bool(SseDeserializer deserializer);
+
+  @protected
+  bool sse_decode_box_autoadd_bool(SseDeserializer deserializer);
+
+  @protected
+  FinancialCard sse_decode_box_autoadd_financial_card(
+      SseDeserializer deserializer);
+
+  @protected
+  PlatformInt64 sse_decode_box_autoadd_i_64(SseDeserializer deserializer);
+
+  @protected
+  IdentityCard sse_decode_box_autoadd_identity_card(
+      SseDeserializer deserializer);
+
+  @protected
+  Login sse_decode_box_autoadd_login(SseDeserializer deserializer);
+
+  @protected
+  LoginData sse_decode_box_autoadd_login_data(SseDeserializer deserializer);
+
+  @protected
+  Note sse_decode_box_autoadd_note(SseDeserializer deserializer);
+
+  @protected
+  RegisterData sse_decode_box_autoadd_register_data(
+      SseDeserializer deserializer);
+
+  @protected
+  Tag sse_decode_box_autoadd_tag(SseDeserializer deserializer);
+
+  @protected
+  FinancialCard sse_decode_financial_card(SseDeserializer deserializer);
+
+  @protected
+  PlatformInt64 sse_decode_i_64(SseDeserializer deserializer);
+
+  @protected
+  IdentityCard sse_decode_identity_card(SseDeserializer deserializer);
+
+  @protected
+  JwtTokens sse_decode_jwt_tokens(SseDeserializer deserializer);
+
+  @protected
+  List<FinancialCard> sse_decode_list_financial_card(
+      SseDeserializer deserializer);
+
+  @protected
+  List<IdentityCard> sse_decode_list_identity_card(
+      SseDeserializer deserializer);
+
+  @protected
+  List<Login> sse_decode_list_login(SseDeserializer deserializer);
+
+  @protected
+  List<Note> sse_decode_list_note(SseDeserializer deserializer);
+
+  @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
+
+  @protected
+  List<Tag> sse_decode_list_tag(SseDeserializer deserializer);
+
+  @protected
+  Login sse_decode_login(SseDeserializer deserializer);
+
+  @protected
+  LoginData sse_decode_login_data(SseDeserializer deserializer);
+
+  @protected
+  Note sse_decode_note(SseDeserializer deserializer);
+
+  @protected
+  String? sse_decode_opt_String(SseDeserializer deserializer);
+
+  @protected
+  bool? sse_decode_opt_box_autoadd_bool(SseDeserializer deserializer);
+
+  @protected
+  PlatformInt64? sse_decode_opt_box_autoadd_i_64(SseDeserializer deserializer);
+
+  @protected
+  (bool, String) sse_decode_record_bool_string(SseDeserializer deserializer);
+
+  @protected
+  RegisterData sse_decode_register_data(SseDeserializer deserializer);
+
+  @protected
+  Tag sse_decode_tag(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_8(SseDeserializer deserializer);
@@ -48,14 +233,108 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   int sse_decode_i_32(SseDeserializer deserializer);
 
   @protected
-  bool sse_decode_bool(SseDeserializer deserializer);
+  void sse_encode_AnyhowException(
+      AnyhowException self, SseSerializer serializer);
 
   @protected
   void sse_encode_String(String self, SseSerializer serializer);
 
   @protected
+  void sse_encode_bool(bool self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_bool(bool self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_financial_card(
+      FinancialCard self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_i_64(
+      PlatformInt64 self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_identity_card(
+      IdentityCard self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_login(Login self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_login_data(
+      LoginData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_note(Note self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_register_data(
+      RegisterData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_tag(Tag self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_financial_card(FinancialCard self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_i_64(PlatformInt64 self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_identity_card(IdentityCard self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_jwt_tokens(JwtTokens self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_financial_card(
+      List<FinancialCard> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_identity_card(
+      List<IdentityCard> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_login(List<Login> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_note(List<Note> self, SseSerializer serializer);
+
+  @protected
   void sse_encode_list_prim_u_8_strict(
       Uint8List self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_list_tag(List<Tag> self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_login(Login self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_login_data(LoginData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_note(Note self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_String(String? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_bool(bool? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_i_64(
+      PlatformInt64? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_record_bool_string(
+      (bool, String) self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_register_data(RegisterData self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_tag(Tag self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_8(int self, SseSerializer serializer);
@@ -65,9 +344,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_i_32(int self, SseSerializer serializer);
-
-  @protected
-  void sse_encode_bool(bool self, SseSerializer serializer);
 }
 
 // Section: wire_class

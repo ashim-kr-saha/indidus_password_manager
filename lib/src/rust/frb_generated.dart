@@ -9,6 +9,12 @@ import 'dart:convert';
 import 'frb_generated.dart';
 import 'frb_generated.io.dart'
     if (dart.library.js_interop) 'frb_generated.web.dart';
+import 'models/financial_cards.dart';
+import 'models/identity_cards.dart';
+import 'models/logins.dart';
+import 'models/notes.dart';
+import 'models/others/authentication.dart';
+import 'models/tags.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 /// Main entrypoint of the Rust API
@@ -68,7 +74,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.7.0';
 
   @override
-  int get rustContentHash => -1918914929;
+  int get rustContentHash => -1303389640;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -79,9 +85,106 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 }
 
 abstract class RustLibApi extends BaseApi {
+  Future<void> crateApiSimpleBackupDataToServer();
+
+  Future<Tag> crateApiSimpleCreateTag(
+      {required Tag tag, required String token});
+
+  Future<String> crateApiSimpleDecryptData(
+      {required String data, required String password});
+
+  Future<FinancialCard> crateApiSimpleDeleteFinancialCard(
+      {required String id, required String token});
+
+  Future<IdentityCard> crateApiSimpleDeleteIdentityCard(
+      {required String id, required String token});
+
+  Future<Login> crateApiSimpleDeleteLogin(
+      {required String id, required String token});
+
+  Future<Note> crateApiSimpleDeleteNote(
+      {required String id, required String token});
+
+  Future<Tag> crateApiSimpleDeleteTag(
+      {required String id, required String token});
+
+  Future<String> crateApiSimpleEncryptData(
+      {required String data, required String password});
+
+  Future<String> crateApiSimpleExportAllDataToJson();
+
+  Future<FinancialCard> crateApiSimpleGetFinancialCard(
+      {required String id, required String token});
+
+  Future<IdentityCard> crateApiSimpleGetIdentityCard(
+      {required String id, required String token});
+
+  Future<Login> crateApiSimpleGetLogin(
+      {required String id, required String token});
+
+  Future<Note> crateApiSimpleGetNote(
+      {required String id, required String token});
+
+  Future<Tag> crateApiSimpleGetTag({required String id, required String token});
+
   String crateApiSimpleGreet({required String name});
 
+  Future<(bool, String)> crateApiSimpleInit({required String dbPath});
+
   Future<void> crateApiSimpleInitApp();
+
+  Future<bool> crateApiSimpleIsDatabaseInitialized();
+
+  Future<List<FinancialCard>> crateApiSimpleListFinancialCard(
+      {required String query, required String token});
+
+  Future<List<IdentityCard>> crateApiSimpleListIdentityCard(
+      {required String query, required String token});
+
+  Future<List<Login>> crateApiSimpleListLogin(
+      {required String query, required String token});
+
+  Future<List<Note>> crateApiSimpleListNote(
+      {required String query, required String token});
+
+  Future<List<Tag>> crateApiSimpleListTags(
+      {required String query, required String token});
+
+  Future<JwtTokens> crateApiSimpleLogin({required LoginData user});
+
+  Future<FinancialCard> crateApiSimplePostFinancialCard(
+      {required FinancialCard data, required String token});
+
+  Future<IdentityCard> crateApiSimplePostIdentityCard(
+      {required IdentityCard data, required String token});
+
+  Future<Login> crateApiSimplePostLogin(
+      {required Login data, required String token});
+
+  Future<Note> crateApiSimplePostNote(
+      {required Note data, required String token});
+
+  Future<FinancialCard> crateApiSimplePutFinancialCard(
+      {required String id, required FinancialCard data, required String token});
+
+  Future<IdentityCard> crateApiSimplePutIdentityCard(
+      {required String id, required IdentityCard data, required String token});
+
+  Future<Login> crateApiSimplePutLogin(
+      {required String id, required Login data, required String token});
+
+  Future<Note> crateApiSimplePutNote(
+      {required String id, required Note data, required String token});
+
+  Future<Tag> crateApiSimplePutTag(
+      {required String id, required Tag tag, required String token});
+
+  Future<JwtTokens> crateApiSimpleRegister({required RegisterData user});
+
+  Future<void> crateApiSimpleRestoreDataFromJson({required String data});
+
+  Future<bool?> crateApiSimpleToggleFavorite(
+      {required String id, required String itemType});
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -93,12 +196,402 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   });
 
   @override
+  Future<void> crateApiSimpleBackupDataToServer() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 1, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimpleBackupDataToServerConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimpleBackupDataToServerConstMeta =>
+      const TaskConstMeta(
+        debugName: "backup_data_to_server",
+        argNames: [],
+      );
+
+  @override
+  Future<Tag> crateApiSimpleCreateTag(
+      {required Tag tag, required String token}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_tag(tag, serializer);
+        sse_encode_String(token, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 2, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_tag,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimpleCreateTagConstMeta,
+      argValues: [tag, token],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimpleCreateTagConstMeta => const TaskConstMeta(
+        debugName: "create_tag",
+        argNames: ["tag", "token"],
+      );
+
+  @override
+  Future<String> crateApiSimpleDecryptData(
+      {required String data, required String password}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(data, serializer);
+        sse_encode_String(password, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 3, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimpleDecryptDataConstMeta,
+      argValues: [data, password],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimpleDecryptDataConstMeta => const TaskConstMeta(
+        debugName: "decrypt_data",
+        argNames: ["data", "password"],
+      );
+
+  @override
+  Future<FinancialCard> crateApiSimpleDeleteFinancialCard(
+      {required String id, required String token}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(id, serializer);
+        sse_encode_String(token, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 4, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_financial_card,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimpleDeleteFinancialCardConstMeta,
+      argValues: [id, token],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimpleDeleteFinancialCardConstMeta =>
+      const TaskConstMeta(
+        debugName: "delete_financial_card",
+        argNames: ["id", "token"],
+      );
+
+  @override
+  Future<IdentityCard> crateApiSimpleDeleteIdentityCard(
+      {required String id, required String token}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(id, serializer);
+        sse_encode_String(token, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 5, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_identity_card,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimpleDeleteIdentityCardConstMeta,
+      argValues: [id, token],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimpleDeleteIdentityCardConstMeta =>
+      const TaskConstMeta(
+        debugName: "delete_identity_card",
+        argNames: ["id", "token"],
+      );
+
+  @override
+  Future<Login> crateApiSimpleDeleteLogin(
+      {required String id, required String token}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(id, serializer);
+        sse_encode_String(token, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 6, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_login,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimpleDeleteLoginConstMeta,
+      argValues: [id, token],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimpleDeleteLoginConstMeta => const TaskConstMeta(
+        debugName: "delete_login",
+        argNames: ["id", "token"],
+      );
+
+  @override
+  Future<Note> crateApiSimpleDeleteNote(
+      {required String id, required String token}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(id, serializer);
+        sse_encode_String(token, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 7, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_note,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimpleDeleteNoteConstMeta,
+      argValues: [id, token],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimpleDeleteNoteConstMeta => const TaskConstMeta(
+        debugName: "delete_note",
+        argNames: ["id", "token"],
+      );
+
+  @override
+  Future<Tag> crateApiSimpleDeleteTag(
+      {required String id, required String token}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(id, serializer);
+        sse_encode_String(token, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 8, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_tag,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimpleDeleteTagConstMeta,
+      argValues: [id, token],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimpleDeleteTagConstMeta => const TaskConstMeta(
+        debugName: "delete_tag",
+        argNames: ["id", "token"],
+      );
+
+  @override
+  Future<String> crateApiSimpleEncryptData(
+      {required String data, required String password}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(data, serializer);
+        sse_encode_String(password, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 9, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimpleEncryptDataConstMeta,
+      argValues: [data, password],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimpleEncryptDataConstMeta => const TaskConstMeta(
+        debugName: "encrypt_data",
+        argNames: ["data", "password"],
+      );
+
+  @override
+  Future<String> crateApiSimpleExportAllDataToJson() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 10, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimpleExportAllDataToJsonConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimpleExportAllDataToJsonConstMeta =>
+      const TaskConstMeta(
+        debugName: "export_all_data_to_json",
+        argNames: [],
+      );
+
+  @override
+  Future<FinancialCard> crateApiSimpleGetFinancialCard(
+      {required String id, required String token}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(id, serializer);
+        sse_encode_String(token, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 11, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_financial_card,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimpleGetFinancialCardConstMeta,
+      argValues: [id, token],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimpleGetFinancialCardConstMeta =>
+      const TaskConstMeta(
+        debugName: "get_financial_card",
+        argNames: ["id", "token"],
+      );
+
+  @override
+  Future<IdentityCard> crateApiSimpleGetIdentityCard(
+      {required String id, required String token}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(id, serializer);
+        sse_encode_String(token, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 12, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_identity_card,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimpleGetIdentityCardConstMeta,
+      argValues: [id, token],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimpleGetIdentityCardConstMeta =>
+      const TaskConstMeta(
+        debugName: "get_identity_card",
+        argNames: ["id", "token"],
+      );
+
+  @override
+  Future<Login> crateApiSimpleGetLogin(
+      {required String id, required String token}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(id, serializer);
+        sse_encode_String(token, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 13, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_login,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimpleGetLoginConstMeta,
+      argValues: [id, token],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimpleGetLoginConstMeta => const TaskConstMeta(
+        debugName: "get_login",
+        argNames: ["id", "token"],
+      );
+
+  @override
+  Future<Note> crateApiSimpleGetNote(
+      {required String id, required String token}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(id, serializer);
+        sse_encode_String(token, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 14, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_note,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimpleGetNoteConstMeta,
+      argValues: [id, token],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimpleGetNoteConstMeta => const TaskConstMeta(
+        debugName: "get_note",
+        argNames: ["id", "token"],
+      );
+
+  @override
+  Future<Tag> crateApiSimpleGetTag(
+      {required String id, required String token}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(id, serializer);
+        sse_encode_String(token, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 15, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_tag,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimpleGetTagConstMeta,
+      argValues: [id, token],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimpleGetTagConstMeta => const TaskConstMeta(
+        debugName: "get_tag",
+        argNames: ["id", "token"],
+      );
+
+  @override
   String crateApiSimpleGreet({required String name}) {
     return handler.executeSync(SyncTask(
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(name, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 1)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 16)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -116,12 +609,36 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<(bool, String)> crateApiSimpleInit({required String dbPath}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(dbPath, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 17, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_record_bool_string,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiSimpleInitConstMeta,
+      argValues: [dbPath],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimpleInitConstMeta => const TaskConstMeta(
+        debugName: "init",
+        argNames: ["dbPath"],
+      );
+
+  @override
   Future<void> crateApiSimpleInitApp() {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 2, port: port_);
+            funcId: 18, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -138,6 +655,513 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         argNames: [],
       );
 
+  @override
+  Future<bool> crateApiSimpleIsDatabaseInitialized() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 19, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_bool,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimpleIsDatabaseInitializedConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimpleIsDatabaseInitializedConstMeta =>
+      const TaskConstMeta(
+        debugName: "is_database_initialized",
+        argNames: [],
+      );
+
+  @override
+  Future<List<FinancialCard>> crateApiSimpleListFinancialCard(
+      {required String query, required String token}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(query, serializer);
+        sse_encode_String(token, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 20, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_financial_card,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimpleListFinancialCardConstMeta,
+      argValues: [query, token],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimpleListFinancialCardConstMeta =>
+      const TaskConstMeta(
+        debugName: "list_financial_card",
+        argNames: ["query", "token"],
+      );
+
+  @override
+  Future<List<IdentityCard>> crateApiSimpleListIdentityCard(
+      {required String query, required String token}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(query, serializer);
+        sse_encode_String(token, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 21, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_identity_card,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimpleListIdentityCardConstMeta,
+      argValues: [query, token],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimpleListIdentityCardConstMeta =>
+      const TaskConstMeta(
+        debugName: "list_identity_card",
+        argNames: ["query", "token"],
+      );
+
+  @override
+  Future<List<Login>> crateApiSimpleListLogin(
+      {required String query, required String token}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(query, serializer);
+        sse_encode_String(token, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 22, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_login,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimpleListLoginConstMeta,
+      argValues: [query, token],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimpleListLoginConstMeta => const TaskConstMeta(
+        debugName: "list_login",
+        argNames: ["query", "token"],
+      );
+
+  @override
+  Future<List<Note>> crateApiSimpleListNote(
+      {required String query, required String token}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(query, serializer);
+        sse_encode_String(token, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 23, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_note,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimpleListNoteConstMeta,
+      argValues: [query, token],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimpleListNoteConstMeta => const TaskConstMeta(
+        debugName: "list_note",
+        argNames: ["query", "token"],
+      );
+
+  @override
+  Future<List<Tag>> crateApiSimpleListTags(
+      {required String query, required String token}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(query, serializer);
+        sse_encode_String(token, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 24, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_tag,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimpleListTagsConstMeta,
+      argValues: [query, token],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimpleListTagsConstMeta => const TaskConstMeta(
+        debugName: "list_tags",
+        argNames: ["query", "token"],
+      );
+
+  @override
+  Future<JwtTokens> crateApiSimpleLogin({required LoginData user}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_login_data(user, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 25, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_jwt_tokens,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimpleLoginConstMeta,
+      argValues: [user],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimpleLoginConstMeta => const TaskConstMeta(
+        debugName: "login",
+        argNames: ["user"],
+      );
+
+  @override
+  Future<FinancialCard> crateApiSimplePostFinancialCard(
+      {required FinancialCard data, required String token}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_financial_card(data, serializer);
+        sse_encode_String(token, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 26, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_financial_card,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimplePostFinancialCardConstMeta,
+      argValues: [data, token],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimplePostFinancialCardConstMeta =>
+      const TaskConstMeta(
+        debugName: "post_financial_card",
+        argNames: ["data", "token"],
+      );
+
+  @override
+  Future<IdentityCard> crateApiSimplePostIdentityCard(
+      {required IdentityCard data, required String token}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_identity_card(data, serializer);
+        sse_encode_String(token, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 27, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_identity_card,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimplePostIdentityCardConstMeta,
+      argValues: [data, token],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimplePostIdentityCardConstMeta =>
+      const TaskConstMeta(
+        debugName: "post_identity_card",
+        argNames: ["data", "token"],
+      );
+
+  @override
+  Future<Login> crateApiSimplePostLogin(
+      {required Login data, required String token}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_login(data, serializer);
+        sse_encode_String(token, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 28, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_login,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimplePostLoginConstMeta,
+      argValues: [data, token],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimplePostLoginConstMeta => const TaskConstMeta(
+        debugName: "post_login",
+        argNames: ["data", "token"],
+      );
+
+  @override
+  Future<Note> crateApiSimplePostNote(
+      {required Note data, required String token}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_note(data, serializer);
+        sse_encode_String(token, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 29, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_note,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimplePostNoteConstMeta,
+      argValues: [data, token],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimplePostNoteConstMeta => const TaskConstMeta(
+        debugName: "post_note",
+        argNames: ["data", "token"],
+      );
+
+  @override
+  Future<FinancialCard> crateApiSimplePutFinancialCard(
+      {required String id,
+      required FinancialCard data,
+      required String token}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(id, serializer);
+        sse_encode_box_autoadd_financial_card(data, serializer);
+        sse_encode_String(token, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 30, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_financial_card,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimplePutFinancialCardConstMeta,
+      argValues: [id, data, token],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimplePutFinancialCardConstMeta =>
+      const TaskConstMeta(
+        debugName: "put_financial_card",
+        argNames: ["id", "data", "token"],
+      );
+
+  @override
+  Future<IdentityCard> crateApiSimplePutIdentityCard(
+      {required String id, required IdentityCard data, required String token}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(id, serializer);
+        sse_encode_box_autoadd_identity_card(data, serializer);
+        sse_encode_String(token, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 31, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_identity_card,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimplePutIdentityCardConstMeta,
+      argValues: [id, data, token],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimplePutIdentityCardConstMeta =>
+      const TaskConstMeta(
+        debugName: "put_identity_card",
+        argNames: ["id", "data", "token"],
+      );
+
+  @override
+  Future<Login> crateApiSimplePutLogin(
+      {required String id, required Login data, required String token}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(id, serializer);
+        sse_encode_box_autoadd_login(data, serializer);
+        sse_encode_String(token, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 32, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_login,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimplePutLoginConstMeta,
+      argValues: [id, data, token],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimplePutLoginConstMeta => const TaskConstMeta(
+        debugName: "put_login",
+        argNames: ["id", "data", "token"],
+      );
+
+  @override
+  Future<Note> crateApiSimplePutNote(
+      {required String id, required Note data, required String token}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(id, serializer);
+        sse_encode_box_autoadd_note(data, serializer);
+        sse_encode_String(token, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 33, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_note,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimplePutNoteConstMeta,
+      argValues: [id, data, token],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimplePutNoteConstMeta => const TaskConstMeta(
+        debugName: "put_note",
+        argNames: ["id", "data", "token"],
+      );
+
+  @override
+  Future<Tag> crateApiSimplePutTag(
+      {required String id, required Tag tag, required String token}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(id, serializer);
+        sse_encode_box_autoadd_tag(tag, serializer);
+        sse_encode_String(token, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 34, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_tag,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimplePutTagConstMeta,
+      argValues: [id, tag, token],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimplePutTagConstMeta => const TaskConstMeta(
+        debugName: "put_tag",
+        argNames: ["id", "tag", "token"],
+      );
+
+  @override
+  Future<JwtTokens> crateApiSimpleRegister({required RegisterData user}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_register_data(user, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 35, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_jwt_tokens,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimpleRegisterConstMeta,
+      argValues: [user],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimpleRegisterConstMeta => const TaskConstMeta(
+        debugName: "register",
+        argNames: ["user"],
+      );
+
+  @override
+  Future<void> crateApiSimpleRestoreDataFromJson({required String data}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(data, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 36, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimpleRestoreDataFromJsonConstMeta,
+      argValues: [data],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimpleRestoreDataFromJsonConstMeta =>
+      const TaskConstMeta(
+        debugName: "restore_data_from_json",
+        argNames: ["data"],
+      );
+
+  @override
+  Future<bool?> crateApiSimpleToggleFavorite(
+      {required String id, required String itemType}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(id, serializer);
+        sse_encode_String(itemType, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 37, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_opt_box_autoadd_bool,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimpleToggleFavoriteConstMeta,
+      argValues: [id, itemType],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimpleToggleFavoriteConstMeta =>
+      const TaskConstMeta(
+        debugName: "toggle_favorite",
+        argNames: ["id", "itemType"],
+      );
+
+  @protected
+  AnyhowException dco_decode_AnyhowException(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return AnyhowException(raw as String);
+  }
+
   @protected
   String dco_decode_String(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
@@ -145,9 +1169,286 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  bool dco_decode_bool(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as bool;
+  }
+
+  @protected
+  bool dco_decode_box_autoadd_bool(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as bool;
+  }
+
+  @protected
+  FinancialCard dco_decode_box_autoadd_financial_card(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_financial_card(raw);
+  }
+
+  @protected
+  PlatformInt64 dco_decode_box_autoadd_i_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_i_64(raw);
+  }
+
+  @protected
+  IdentityCard dco_decode_box_autoadd_identity_card(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_identity_card(raw);
+  }
+
+  @protected
+  Login dco_decode_box_autoadd_login(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_login(raw);
+  }
+
+  @protected
+  LoginData dco_decode_box_autoadd_login_data(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_login_data(raw);
+  }
+
+  @protected
+  Note dco_decode_box_autoadd_note(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_note(raw);
+  }
+
+  @protected
+  RegisterData dco_decode_box_autoadd_register_data(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_register_data(raw);
+  }
+
+  @protected
+  Tag dco_decode_box_autoadd_tag(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_tag(raw);
+  }
+
+  @protected
+  FinancialCard dco_decode_financial_card(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 17)
+      throw Exception('unexpected arr length: expect 17 but see ${arr.length}');
+    return FinancialCard(
+      id: dco_decode_opt_String(arr[0]),
+      createdAt: dco_decode_opt_box_autoadd_i_64(arr[1]),
+      createdBy: dco_decode_opt_String(arr[2]),
+      updatedAt: dco_decode_opt_box_autoadd_i_64(arr[3]),
+      updatedBy: dco_decode_opt_String(arr[4]),
+      cardHolderName: dco_decode_String(arr[5]),
+      cardNumber: dco_decode_String(arr[6]),
+      cardProviderName: dco_decode_opt_String(arr[7]),
+      cardType: dco_decode_opt_String(arr[8]),
+      cvv: dco_decode_opt_String(arr[9]),
+      expiryDate: dco_decode_opt_String(arr[10]),
+      issueDate: dco_decode_opt_String(arr[11]),
+      name: dco_decode_String(arr[12]),
+      note: dco_decode_opt_String(arr[13]),
+      pin: dco_decode_opt_String(arr[14]),
+      isFavorite: dco_decode_opt_box_autoadd_bool(arr[15]),
+      tags: dco_decode_opt_String(arr[16]),
+    );
+  }
+
+  @protected
+  PlatformInt64 dco_decode_i_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dcoDecodeI64(raw);
+  }
+
+  @protected
+  IdentityCard dco_decode_identity_card(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 16)
+      throw Exception('unexpected arr length: expect 16 but see ${arr.length}');
+    return IdentityCard(
+      id: dco_decode_opt_String(arr[0]),
+      createdAt: dco_decode_opt_box_autoadd_i_64(arr[1]),
+      createdBy: dco_decode_opt_String(arr[2]),
+      updatedAt: dco_decode_opt_box_autoadd_i_64(arr[3]),
+      updatedBy: dco_decode_opt_String(arr[4]),
+      name: dco_decode_String(arr[5]),
+      note: dco_decode_opt_String(arr[6]),
+      country: dco_decode_opt_String(arr[7]),
+      expiryDate: dco_decode_opt_String(arr[8]),
+      identityCardNumber: dco_decode_String(arr[9]),
+      identityCardType: dco_decode_opt_String(arr[10]),
+      issueDate: dco_decode_opt_String(arr[11]),
+      nameOnCard: dco_decode_String(arr[12]),
+      state: dco_decode_opt_String(arr[13]),
+      isFavorite: dco_decode_opt_box_autoadd_bool(arr[14]),
+      tags: dco_decode_opt_String(arr[15]),
+    );
+  }
+
+  @protected
+  JwtTokens dco_decode_jwt_tokens(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return JwtTokens(
+      accessToken: dco_decode_String(arr[0]),
+      refreshToken: dco_decode_String(arr[1]),
+    );
+  }
+
+  @protected
+  List<FinancialCard> dco_decode_list_financial_card(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_financial_card).toList();
+  }
+
+  @protected
+  List<IdentityCard> dco_decode_list_identity_card(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_identity_card).toList();
+  }
+
+  @protected
+  List<Login> dco_decode_list_login(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_login).toList();
+  }
+
+  @protected
+  List<Note> dco_decode_list_note(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_note).toList();
+  }
+
+  @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as Uint8List;
+  }
+
+  @protected
+  List<Tag> dco_decode_list_tag(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_tag).toList();
+  }
+
+  @protected
+  Login dco_decode_login(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 14)
+      throw Exception('unexpected arr length: expect 14 but see ${arr.length}');
+    return Login(
+      id: dco_decode_opt_String(arr[0]),
+      createdAt: dco_decode_opt_box_autoadd_i_64(arr[1]),
+      createdBy: dco_decode_opt_String(arr[2]),
+      updatedAt: dco_decode_opt_box_autoadd_i_64(arr[3]),
+      updatedBy: dco_decode_opt_String(arr[4]),
+      name: dco_decode_String(arr[5]),
+      note: dco_decode_opt_String(arr[6]),
+      username: dco_decode_String(arr[7]),
+      url: dco_decode_opt_String(arr[8]),
+      password: dco_decode_opt_String(arr[9]),
+      passwordHint: dco_decode_opt_String(arr[10]),
+      isFavorite: dco_decode_opt_box_autoadd_bool(arr[11]),
+      tags: dco_decode_opt_String(arr[12]),
+      apiKeys: dco_decode_opt_String(arr[13]),
+    );
+  }
+
+  @protected
+  LoginData dco_decode_login_data(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return LoginData(
+      email: dco_decode_String(arr[0]),
+      password: dco_decode_String(arr[1]),
+    );
+  }
+
+  @protected
+  Note dco_decode_note(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 9)
+      throw Exception('unexpected arr length: expect 9 but see ${arr.length}');
+    return Note(
+      id: dco_decode_opt_String(arr[0]),
+      createdAt: dco_decode_opt_box_autoadd_i_64(arr[1]),
+      createdBy: dco_decode_opt_String(arr[2]),
+      updatedAt: dco_decode_opt_box_autoadd_i_64(arr[3]),
+      updatedBy: dco_decode_opt_String(arr[4]),
+      name: dco_decode_String(arr[5]),
+      note: dco_decode_opt_String(arr[6]),
+      isFavorite: dco_decode_opt_box_autoadd_bool(arr[7]),
+      tags: dco_decode_opt_String(arr[8]),
+    );
+  }
+
+  @protected
+  String? dco_decode_opt_String(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_String(raw);
+  }
+
+  @protected
+  bool? dco_decode_opt_box_autoadd_bool(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_bool(raw);
+  }
+
+  @protected
+  PlatformInt64? dco_decode_opt_box_autoadd_i_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_i_64(raw);
+  }
+
+  @protected
+  (bool, String) dco_decode_record_bool_string(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2) {
+      throw Exception('Expected 2 elements, got ${arr.length}');
+    }
+    return (
+      dco_decode_bool(arr[0]),
+      dco_decode_String(arr[1]),
+    );
+  }
+
+  @protected
+  RegisterData dco_decode_register_data(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    return RegisterData(
+      name: dco_decode_String(arr[0]),
+      email: dco_decode_String(arr[1]),
+      password: dco_decode_String(arr[2]),
+      rePassword: dco_decode_String(arr[3]),
+    );
+  }
+
+  @protected
+  Tag dco_decode_tag(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 6)
+      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
+    return Tag(
+      id: dco_decode_opt_String(arr[0]),
+      createdAt: dco_decode_opt_box_autoadd_i_64(arr[1]),
+      createdBy: dco_decode_opt_String(arr[2]),
+      updatedAt: dco_decode_opt_box_autoadd_i_64(arr[3]),
+      updatedBy: dco_decode_opt_String(arr[4]),
+      name: dco_decode_String(arr[5]),
+    );
   }
 
   @protected
@@ -163,6 +1464,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  AnyhowException sse_decode_AnyhowException(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_String(deserializer);
+    return AnyhowException(inner);
+  }
+
+  @protected
   String sse_decode_String(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_list_prim_u_8_strict(deserializer);
@@ -170,10 +1478,367 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  bool sse_decode_bool(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getUint8() != 0;
+  }
+
+  @protected
+  bool sse_decode_box_autoadd_bool(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_bool(deserializer));
+  }
+
+  @protected
+  FinancialCard sse_decode_box_autoadd_financial_card(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_financial_card(deserializer));
+  }
+
+  @protected
+  PlatformInt64 sse_decode_box_autoadd_i_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_i_64(deserializer));
+  }
+
+  @protected
+  IdentityCard sse_decode_box_autoadd_identity_card(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_identity_card(deserializer));
+  }
+
+  @protected
+  Login sse_decode_box_autoadd_login(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_login(deserializer));
+  }
+
+  @protected
+  LoginData sse_decode_box_autoadd_login_data(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_login_data(deserializer));
+  }
+
+  @protected
+  Note sse_decode_box_autoadd_note(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_note(deserializer));
+  }
+
+  @protected
+  RegisterData sse_decode_box_autoadd_register_data(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_register_data(deserializer));
+  }
+
+  @protected
+  Tag sse_decode_box_autoadd_tag(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_tag(deserializer));
+  }
+
+  @protected
+  FinancialCard sse_decode_financial_card(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_id = sse_decode_opt_String(deserializer);
+    var var_createdAt = sse_decode_opt_box_autoadd_i_64(deserializer);
+    var var_createdBy = sse_decode_opt_String(deserializer);
+    var var_updatedAt = sse_decode_opt_box_autoadd_i_64(deserializer);
+    var var_updatedBy = sse_decode_opt_String(deserializer);
+    var var_cardHolderName = sse_decode_String(deserializer);
+    var var_cardNumber = sse_decode_String(deserializer);
+    var var_cardProviderName = sse_decode_opt_String(deserializer);
+    var var_cardType = sse_decode_opt_String(deserializer);
+    var var_cvv = sse_decode_opt_String(deserializer);
+    var var_expiryDate = sse_decode_opt_String(deserializer);
+    var var_issueDate = sse_decode_opt_String(deserializer);
+    var var_name = sse_decode_String(deserializer);
+    var var_note = sse_decode_opt_String(deserializer);
+    var var_pin = sse_decode_opt_String(deserializer);
+    var var_isFavorite = sse_decode_opt_box_autoadd_bool(deserializer);
+    var var_tags = sse_decode_opt_String(deserializer);
+    return FinancialCard(
+        id: var_id,
+        createdAt: var_createdAt,
+        createdBy: var_createdBy,
+        updatedAt: var_updatedAt,
+        updatedBy: var_updatedBy,
+        cardHolderName: var_cardHolderName,
+        cardNumber: var_cardNumber,
+        cardProviderName: var_cardProviderName,
+        cardType: var_cardType,
+        cvv: var_cvv,
+        expiryDate: var_expiryDate,
+        issueDate: var_issueDate,
+        name: var_name,
+        note: var_note,
+        pin: var_pin,
+        isFavorite: var_isFavorite,
+        tags: var_tags);
+  }
+
+  @protected
+  PlatformInt64 sse_decode_i_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getPlatformInt64();
+  }
+
+  @protected
+  IdentityCard sse_decode_identity_card(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_id = sse_decode_opt_String(deserializer);
+    var var_createdAt = sse_decode_opt_box_autoadd_i_64(deserializer);
+    var var_createdBy = sse_decode_opt_String(deserializer);
+    var var_updatedAt = sse_decode_opt_box_autoadd_i_64(deserializer);
+    var var_updatedBy = sse_decode_opt_String(deserializer);
+    var var_name = sse_decode_String(deserializer);
+    var var_note = sse_decode_opt_String(deserializer);
+    var var_country = sse_decode_opt_String(deserializer);
+    var var_expiryDate = sse_decode_opt_String(deserializer);
+    var var_identityCardNumber = sse_decode_String(deserializer);
+    var var_identityCardType = sse_decode_opt_String(deserializer);
+    var var_issueDate = sse_decode_opt_String(deserializer);
+    var var_nameOnCard = sse_decode_String(deserializer);
+    var var_state = sse_decode_opt_String(deserializer);
+    var var_isFavorite = sse_decode_opt_box_autoadd_bool(deserializer);
+    var var_tags = sse_decode_opt_String(deserializer);
+    return IdentityCard(
+        id: var_id,
+        createdAt: var_createdAt,
+        createdBy: var_createdBy,
+        updatedAt: var_updatedAt,
+        updatedBy: var_updatedBy,
+        name: var_name,
+        note: var_note,
+        country: var_country,
+        expiryDate: var_expiryDate,
+        identityCardNumber: var_identityCardNumber,
+        identityCardType: var_identityCardType,
+        issueDate: var_issueDate,
+        nameOnCard: var_nameOnCard,
+        state: var_state,
+        isFavorite: var_isFavorite,
+        tags: var_tags);
+  }
+
+  @protected
+  JwtTokens sse_decode_jwt_tokens(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_accessToken = sse_decode_String(deserializer);
+    var var_refreshToken = sse_decode_String(deserializer);
+    return JwtTokens(
+        accessToken: var_accessToken, refreshToken: var_refreshToken);
+  }
+
+  @protected
+  List<FinancialCard> sse_decode_list_financial_card(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <FinancialCard>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_financial_card(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  List<IdentityCard> sse_decode_list_identity_card(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <IdentityCard>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_identity_card(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  List<Login> sse_decode_list_login(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <Login>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_login(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  List<Note> sse_decode_list_note(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <Note>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_note(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var len_ = sse_decode_i_32(deserializer);
     return deserializer.buffer.getUint8List(len_);
+  }
+
+  @protected
+  List<Tag> sse_decode_list_tag(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <Tag>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_tag(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
+  Login sse_decode_login(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_id = sse_decode_opt_String(deserializer);
+    var var_createdAt = sse_decode_opt_box_autoadd_i_64(deserializer);
+    var var_createdBy = sse_decode_opt_String(deserializer);
+    var var_updatedAt = sse_decode_opt_box_autoadd_i_64(deserializer);
+    var var_updatedBy = sse_decode_opt_String(deserializer);
+    var var_name = sse_decode_String(deserializer);
+    var var_note = sse_decode_opt_String(deserializer);
+    var var_username = sse_decode_String(deserializer);
+    var var_url = sse_decode_opt_String(deserializer);
+    var var_password = sse_decode_opt_String(deserializer);
+    var var_passwordHint = sse_decode_opt_String(deserializer);
+    var var_isFavorite = sse_decode_opt_box_autoadd_bool(deserializer);
+    var var_tags = sse_decode_opt_String(deserializer);
+    var var_apiKeys = sse_decode_opt_String(deserializer);
+    return Login(
+        id: var_id,
+        createdAt: var_createdAt,
+        createdBy: var_createdBy,
+        updatedAt: var_updatedAt,
+        updatedBy: var_updatedBy,
+        name: var_name,
+        note: var_note,
+        username: var_username,
+        url: var_url,
+        password: var_password,
+        passwordHint: var_passwordHint,
+        isFavorite: var_isFavorite,
+        tags: var_tags,
+        apiKeys: var_apiKeys);
+  }
+
+  @protected
+  LoginData sse_decode_login_data(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_email = sse_decode_String(deserializer);
+    var var_password = sse_decode_String(deserializer);
+    return LoginData(email: var_email, password: var_password);
+  }
+
+  @protected
+  Note sse_decode_note(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_id = sse_decode_opt_String(deserializer);
+    var var_createdAt = sse_decode_opt_box_autoadd_i_64(deserializer);
+    var var_createdBy = sse_decode_opt_String(deserializer);
+    var var_updatedAt = sse_decode_opt_box_autoadd_i_64(deserializer);
+    var var_updatedBy = sse_decode_opt_String(deserializer);
+    var var_name = sse_decode_String(deserializer);
+    var var_note = sse_decode_opt_String(deserializer);
+    var var_isFavorite = sse_decode_opt_box_autoadd_bool(deserializer);
+    var var_tags = sse_decode_opt_String(deserializer);
+    return Note(
+        id: var_id,
+        createdAt: var_createdAt,
+        createdBy: var_createdBy,
+        updatedAt: var_updatedAt,
+        updatedBy: var_updatedBy,
+        name: var_name,
+        note: var_note,
+        isFavorite: var_isFavorite,
+        tags: var_tags);
+  }
+
+  @protected
+  String? sse_decode_opt_String(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_String(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  bool? sse_decode_opt_box_autoadd_bool(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_bool(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  PlatformInt64? sse_decode_opt_box_autoadd_i_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_i_64(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  (bool, String) sse_decode_record_bool_string(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_field0 = sse_decode_bool(deserializer);
+    var var_field1 = sse_decode_String(deserializer);
+    return (var_field0, var_field1);
+  }
+
+  @protected
+  RegisterData sse_decode_register_data(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_name = sse_decode_String(deserializer);
+    var var_email = sse_decode_String(deserializer);
+    var var_password = sse_decode_String(deserializer);
+    var var_rePassword = sse_decode_String(deserializer);
+    return RegisterData(
+        name: var_name,
+        email: var_email,
+        password: var_password,
+        rePassword: var_rePassword);
+  }
+
+  @protected
+  Tag sse_decode_tag(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_id = sse_decode_opt_String(deserializer);
+    var var_createdAt = sse_decode_opt_box_autoadd_i_64(deserializer);
+    var var_createdBy = sse_decode_opt_String(deserializer);
+    var var_updatedAt = sse_decode_opt_box_autoadd_i_64(deserializer);
+    var var_updatedBy = sse_decode_opt_String(deserializer);
+    var var_name = sse_decode_String(deserializer);
+    return Tag(
+        id: var_id,
+        createdAt: var_createdAt,
+        createdBy: var_createdBy,
+        updatedAt: var_updatedAt,
+        updatedBy: var_updatedBy,
+        name: var_name);
   }
 
   @protected
@@ -194,9 +1859,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  bool sse_decode_bool(SseDeserializer deserializer) {
+  void sse_encode_AnyhowException(
+      AnyhowException self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return deserializer.buffer.getUint8() != 0;
+    sse_encode_String(self.message, serializer);
   }
 
   @protected
@@ -206,11 +1872,278 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_bool(bool self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putUint8(self ? 1 : 0);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_bool(bool self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_bool(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_financial_card(
+      FinancialCard self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_financial_card(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_i_64(
+      PlatformInt64 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_64(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_identity_card(
+      IdentityCard self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_identity_card(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_login(Login self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_login(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_login_data(
+      LoginData self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_login_data(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_note(Note self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_note(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_register_data(
+      RegisterData self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_register_data(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_tag(Tag self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_tag(self, serializer);
+  }
+
+  @protected
+  void sse_encode_financial_card(FinancialCard self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_opt_String(self.id, serializer);
+    sse_encode_opt_box_autoadd_i_64(self.createdAt, serializer);
+    sse_encode_opt_String(self.createdBy, serializer);
+    sse_encode_opt_box_autoadd_i_64(self.updatedAt, serializer);
+    sse_encode_opt_String(self.updatedBy, serializer);
+    sse_encode_String(self.cardHolderName, serializer);
+    sse_encode_String(self.cardNumber, serializer);
+    sse_encode_opt_String(self.cardProviderName, serializer);
+    sse_encode_opt_String(self.cardType, serializer);
+    sse_encode_opt_String(self.cvv, serializer);
+    sse_encode_opt_String(self.expiryDate, serializer);
+    sse_encode_opt_String(self.issueDate, serializer);
+    sse_encode_String(self.name, serializer);
+    sse_encode_opt_String(self.note, serializer);
+    sse_encode_opt_String(self.pin, serializer);
+    sse_encode_opt_box_autoadd_bool(self.isFavorite, serializer);
+    sse_encode_opt_String(self.tags, serializer);
+  }
+
+  @protected
+  void sse_encode_i_64(PlatformInt64 self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putPlatformInt64(self);
+  }
+
+  @protected
+  void sse_encode_identity_card(IdentityCard self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_opt_String(self.id, serializer);
+    sse_encode_opt_box_autoadd_i_64(self.createdAt, serializer);
+    sse_encode_opt_String(self.createdBy, serializer);
+    sse_encode_opt_box_autoadd_i_64(self.updatedAt, serializer);
+    sse_encode_opt_String(self.updatedBy, serializer);
+    sse_encode_String(self.name, serializer);
+    sse_encode_opt_String(self.note, serializer);
+    sse_encode_opt_String(self.country, serializer);
+    sse_encode_opt_String(self.expiryDate, serializer);
+    sse_encode_String(self.identityCardNumber, serializer);
+    sse_encode_opt_String(self.identityCardType, serializer);
+    sse_encode_opt_String(self.issueDate, serializer);
+    sse_encode_String(self.nameOnCard, serializer);
+    sse_encode_opt_String(self.state, serializer);
+    sse_encode_opt_box_autoadd_bool(self.isFavorite, serializer);
+    sse_encode_opt_String(self.tags, serializer);
+  }
+
+  @protected
+  void sse_encode_jwt_tokens(JwtTokens self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.accessToken, serializer);
+    sse_encode_String(self.refreshToken, serializer);
+  }
+
+  @protected
+  void sse_encode_list_financial_card(
+      List<FinancialCard> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_financial_card(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_identity_card(
+      List<IdentityCard> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_identity_card(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_login(List<Login> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_login(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_list_note(List<Note> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_note(item, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_list_prim_u_8_strict(
       Uint8List self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
     serializer.buffer.putUint8List(self);
+  }
+
+  @protected
+  void sse_encode_list_tag(List<Tag> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_tag(item, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_login(Login self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_opt_String(self.id, serializer);
+    sse_encode_opt_box_autoadd_i_64(self.createdAt, serializer);
+    sse_encode_opt_String(self.createdBy, serializer);
+    sse_encode_opt_box_autoadd_i_64(self.updatedAt, serializer);
+    sse_encode_opt_String(self.updatedBy, serializer);
+    sse_encode_String(self.name, serializer);
+    sse_encode_opt_String(self.note, serializer);
+    sse_encode_String(self.username, serializer);
+    sse_encode_opt_String(self.url, serializer);
+    sse_encode_opt_String(self.password, serializer);
+    sse_encode_opt_String(self.passwordHint, serializer);
+    sse_encode_opt_box_autoadd_bool(self.isFavorite, serializer);
+    sse_encode_opt_String(self.tags, serializer);
+    sse_encode_opt_String(self.apiKeys, serializer);
+  }
+
+  @protected
+  void sse_encode_login_data(LoginData self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.email, serializer);
+    sse_encode_String(self.password, serializer);
+  }
+
+  @protected
+  void sse_encode_note(Note self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_opt_String(self.id, serializer);
+    sse_encode_opt_box_autoadd_i_64(self.createdAt, serializer);
+    sse_encode_opt_String(self.createdBy, serializer);
+    sse_encode_opt_box_autoadd_i_64(self.updatedAt, serializer);
+    sse_encode_opt_String(self.updatedBy, serializer);
+    sse_encode_String(self.name, serializer);
+    sse_encode_opt_String(self.note, serializer);
+    sse_encode_opt_box_autoadd_bool(self.isFavorite, serializer);
+    sse_encode_opt_String(self.tags, serializer);
+  }
+
+  @protected
+  void sse_encode_opt_String(String? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_String(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_bool(bool? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_bool(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_i_64(
+      PlatformInt64? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_i_64(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_record_bool_string(
+      (bool, String) self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_bool(self.$1, serializer);
+    sse_encode_String(self.$2, serializer);
+  }
+
+  @protected
+  void sse_encode_register_data(RegisterData self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.name, serializer);
+    sse_encode_String(self.email, serializer);
+    sse_encode_String(self.password, serializer);
+    sse_encode_String(self.rePassword, serializer);
+  }
+
+  @protected
+  void sse_encode_tag(Tag self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_opt_String(self.id, serializer);
+    sse_encode_opt_box_autoadd_i_64(self.createdAt, serializer);
+    sse_encode_opt_String(self.createdBy, serializer);
+    sse_encode_opt_box_autoadd_i_64(self.updatedAt, serializer);
+    sse_encode_opt_String(self.updatedBy, serializer);
+    sse_encode_String(self.name, serializer);
   }
 
   @protected
@@ -228,11 +2161,5 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_i_32(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putInt32(self);
-  }
-
-  @protected
-  void sse_encode_bool(bool self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    serializer.buffer.putUint8(self ? 1 : 0);
   }
 }

@@ -13,3 +13,7 @@ test:
   cargo test --manifest-path=./rust/crates/sql/Cargo.toml
   cargo test --manifest-path=./rust/crates/sqlite_backup/Cargo.toml
   cargo test --manifest-path=./rust/Cargo.toml
+
+frb:
+  # cargo install flutter_rust_bridge_codegen
+  flutter_rust_bridge_codegen generate
