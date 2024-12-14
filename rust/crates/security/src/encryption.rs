@@ -21,6 +21,8 @@ pub enum EncryptionError {
     KeyDerivationFailed,
     #[error("Unsupported version")]
     UnsupportedVersion,
+    #[error("Argon2 parameters builder failed")]
+    Argon2ParametersBuilderFailed,
 }
 
 // Constants for Argon2 parameters
@@ -50,14 +52,16 @@ pub fn encrypt(data: &str, password: &str) -> Result<String, EncryptionError> {
     let argon2 = Argon2::new(
         argon2::Algorithm::Argon2id,
         argon2::Version::V0x13,
-        argon2_params.build().unwrap(),
+        argon2_params
+            .build()
+            .map_err(|_| EncryptionError::Argon2ParametersBuilderFailed)?,
     );
 
     let mut key = argon2
         .hash_password(password.as_bytes(), &salt)
         .map_err(|_| EncryptionError::KeyDerivationFailed)?
         .hash
-        .unwrap()
+        .ok_or(EncryptionError::KeyDerivationFailed)?
         .as_bytes()
         .to_vec();
 
@@ -115,14 +119,16 @@ pub fn decrypt(encrypted_data: &str, password: &str) -> Result<String, Encryptio
     let argon2 = Argon2::new(
         argon2::Algorithm::Argon2id,
         argon2::Version::V0x13,
-        argon2_params.build().unwrap(),
+        argon2_params
+            .build()
+            .map_err(|_| EncryptionError::Argon2ParametersBuilderFailed)?,
     );
 
     let mut key = argon2
         .hash_password(password.as_bytes(), &salt)
         .map_err(|_| EncryptionError::KeyDerivationFailed)?
         .hash
-        .unwrap()
+        .ok_or(EncryptionError::KeyDerivationFailed)?
         .as_bytes()
         .to_vec();
 
