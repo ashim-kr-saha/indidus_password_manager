@@ -38,7 +38,7 @@ We welcome contributions from the community to help make Indidus Password Manage
 *   Write clear and concise code.
 *   Comment your code and the main files.
 *   Write tests for your code.
-*   Make sure all your code is covered by the required licence and copyright policy.
+*   Make sure all your code is covered by the required license and copyright policy.
 
 ## Types of Contributions
 
