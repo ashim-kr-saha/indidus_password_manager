@@ -1,0 +1,7 @@
+POST https://192.168.29.139:8443/auth/login HTTP/1.1
+content-type: application/json
+
+{
+  "email": "ashimsaha2311@gmail.com",
+  "password": "Ashim@123456"
+}

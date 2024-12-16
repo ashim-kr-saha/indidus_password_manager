@@ -1,0 +1,9 @@
+POST https://192.168.29.222:8443/register HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Ashim Kumar",
+    "email": "ashimsah2311@gmail.com",
+    "password": "Ashim@123456",
+    "re_password": "Ashim@123456"
+}

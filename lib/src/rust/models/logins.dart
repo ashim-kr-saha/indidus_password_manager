@@ -3,10 +3,16 @@
 
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
-import '../frb_generated.dart';
+import 'dart:convert';
+
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
+
+import '../../models/login_model.dart';
+import '../frb_generated.dart';
+
 part 'logins.freezed.dart';
+part 'logins.g.dart';
 
 @freezed
 class Login with _$Login {
@@ -26,4 +32,26 @@ class Login with _$Login {
     String? tags,
     String? apiKeys,
   }) = _Login;
+
+  factory Login.fromJson(Map<String, Object?> json) => _$LoginFromJson(json);
+
+  factory Login.fromLoginModel(LoginModel loginModel) {
+    String apiKeys =
+        jsonEncode(loginModel.apiKeys?.map((e) => e.toJson()).toList() ?? []);
+    return Login(
+      name: loginModel.name,
+      createdAt: loginModel.createdAt,
+      createdBy: loginModel.createdBy,
+      updatedAt: loginModel.updatedAt,
+      updatedBy: loginModel.updatedBy,
+      username: loginModel.username,
+      password: loginModel.password,
+      passwordHint: loginModel.passwordHint,
+      note: loginModel.note,
+      url: loginModel.url,
+      isFavorite: loginModel.isFavorite,
+      tags: loginModel.tags?.join(','),
+      apiKeys: apiKeys,
+    );
+  }
 }

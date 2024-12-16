@@ -3,10 +3,13 @@
 
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
-import '../../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
+
+import '../../frb_generated.dart';
+
 part 'authentication.freezed.dart';
+part 'authentication.g.dart';
 
 @freezed
 class JwtTokens with _$JwtTokens {
@@ -14,6 +17,9 @@ class JwtTokens with _$JwtTokens {
     required String accessToken,
     required String refreshToken,
   }) = _JwtTokens;
+
+  factory JwtTokens.fromJson(Map<String, Object?> json) =>
+      _$JwtTokensFromJson(json);
 }
 
 @freezed
@@ -22,6 +28,9 @@ class LoginData with _$LoginData {
     required String email,
     required String password,
   }) = _LoginData;
+
+  factory LoginData.fromJson(Map<String, Object?> json) =>
+      _$LoginDataFromJson(json);
 }
 
 @freezed
@@ -32,4 +41,7 @@ class RegisterData with _$RegisterData {
     required String password,
     required String rePassword,
   }) = _RegisterData;
+
+  factory RegisterData.fromJson(Map<String, Object?> json) =>
+      _$RegisterDataFromJson(json);
 }

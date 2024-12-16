@@ -3,10 +3,14 @@
 
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
-import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
+
+import '../../models/identity_card_model.dart';
+import '../frb_generated.dart';
+
 part 'identity_cards.freezed.dart';
+part 'identity_cards.g.dart';
 
 @freezed
 class IdentityCard with _$IdentityCard {
@@ -28,4 +32,28 @@ class IdentityCard with _$IdentityCard {
     bool? isFavorite,
     String? tags,
   }) = _IdentityCard;
+
+  factory IdentityCard.fromJson(Map<String, dynamic> json) =>
+      _$IdentityCardFromJson(json);
+
+  factory IdentityCard.fromIdentityCardModel(IdentityCardModel identityCard) {
+    return IdentityCard(
+      id: identityCard.id,
+      createdAt: identityCard.createdAt,
+      createdBy: identityCard.createdBy,
+      updatedAt: identityCard.updatedAt,
+      updatedBy: identityCard.updatedBy,
+      name: identityCard.name,
+      note: identityCard.note,
+      country: identityCard.country,
+      expiryDate: identityCard.expiryDate,
+      identityCardNumber: identityCard.identityCardNumber,
+      identityCardType: identityCard.identityCardType,
+      issueDate: identityCard.issueDate,
+      nameOnCard: identityCard.nameOnCard,
+      state: identityCard.state,
+      isFavorite: identityCard.isFavorite,
+      tags: identityCard.tags?.join(','),
+    );
+  }
 }

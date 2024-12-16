@@ -4,7 +4,9 @@ version = "0.1.0"
 edition = "2021"
 
 [lib]
-crate-type = ["cdylib", "staticlib"]
+crate-type = ["cdylib", "staticlib", "lib"]
+name = "rust_lib_password"
+path = "src/lib.rs"
 
 [dependencies]
 anyhow = "1.0.89"
@@ -19,7 +21,7 @@ rand = "0.8.5"
 regex = "1.11.0"
 serde = "1.0.210"
 serde_json = "1.0.130"
-thiserror = "2.0.6"
+thiserror = "2.0.7"
 tokio = { version = "1.40.0", features = ["rt", "macros", "time"] }
 rusqlite = "0.32.1"
 security = { version = "0.1.0", path = "./crates/security" }

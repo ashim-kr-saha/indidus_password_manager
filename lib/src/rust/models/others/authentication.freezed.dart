@@ -14,10 +14,17 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
+JwtTokens _$JwtTokensFromJson(Map<String, dynamic> json) {
+  return _JwtTokens.fromJson(json);
+}
+
 /// @nodoc
 mixin _$JwtTokens {
   String get accessToken => throw _privateConstructorUsedError;
   String get refreshToken => throw _privateConstructorUsedError;
+
+  /// Serializes this JwtTokens to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
   /// Create a copy of JwtTokens
   /// with the given fields replaced by the non-null parameter values.
@@ -106,10 +113,13 @@ class __$$JwtTokensImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$JwtTokensImpl implements _JwtTokens {
   const _$JwtTokensImpl(
       {required this.accessToken, required this.refreshToken});
+
+  factory _$JwtTokensImpl.fromJson(Map<String, dynamic> json) =>
+      _$$JwtTokensImplFromJson(json);
 
   @override
   final String accessToken;
@@ -132,6 +142,7 @@ class _$JwtTokensImpl implements _JwtTokens {
                 other.refreshToken == refreshToken));
   }
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, accessToken, refreshToken);
 
@@ -142,12 +153,22 @@ class _$JwtTokensImpl implements _JwtTokens {
   @pragma('vm:prefer-inline')
   _$$JwtTokensImplCopyWith<_$JwtTokensImpl> get copyWith =>
       __$$JwtTokensImplCopyWithImpl<_$JwtTokensImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$JwtTokensImplToJson(
+      this,
+    );
+  }
 }
 
 abstract class _JwtTokens implements JwtTokens {
   const factory _JwtTokens(
       {required final String accessToken,
       required final String refreshToken}) = _$JwtTokensImpl;
+
+  factory _JwtTokens.fromJson(Map<String, dynamic> json) =
+      _$JwtTokensImpl.fromJson;
 
   @override
   String get accessToken;
@@ -162,10 +183,17 @@ abstract class _JwtTokens implements JwtTokens {
       throw _privateConstructorUsedError;
 }
 
+LoginData _$LoginDataFromJson(Map<String, dynamic> json) {
+  return _LoginData.fromJson(json);
+}
+
 /// @nodoc
 mixin _$LoginData {
   String get email => throw _privateConstructorUsedError;
   String get password => throw _privateConstructorUsedError;
+
+  /// Serializes this LoginData to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
   /// Create a copy of LoginData
   /// with the given fields replaced by the non-null parameter values.
@@ -254,9 +282,12 @@ class __$$LoginDataImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$LoginDataImpl implements _LoginData {
   const _$LoginDataImpl({required this.email, required this.password});
+
+  factory _$LoginDataImpl.fromJson(Map<String, dynamic> json) =>
+      _$$LoginDataImplFromJson(json);
 
   @override
   final String email;
@@ -278,6 +309,7 @@ class _$LoginDataImpl implements _LoginData {
                 other.password == password));
   }
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, email, password);
 
@@ -288,12 +320,22 @@ class _$LoginDataImpl implements _LoginData {
   @pragma('vm:prefer-inline')
   _$$LoginDataImplCopyWith<_$LoginDataImpl> get copyWith =>
       __$$LoginDataImplCopyWithImpl<_$LoginDataImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$LoginDataImplToJson(
+      this,
+    );
+  }
 }
 
 abstract class _LoginData implements LoginData {
   const factory _LoginData(
       {required final String email,
       required final String password}) = _$LoginDataImpl;
+
+  factory _LoginData.fromJson(Map<String, dynamic> json) =
+      _$LoginDataImpl.fromJson;
 
   @override
   String get email;
@@ -308,12 +350,19 @@ abstract class _LoginData implements LoginData {
       throw _privateConstructorUsedError;
 }
 
+RegisterData _$RegisterDataFromJson(Map<String, dynamic> json) {
+  return _RegisterData.fromJson(json);
+}
+
 /// @nodoc
 mixin _$RegisterData {
   String get name => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
   String get password => throw _privateConstructorUsedError;
   String get rePassword => throw _privateConstructorUsedError;
+
+  /// Serializes this RegisterData to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
   /// Create a copy of RegisterData
   /// with the given fields replaced by the non-null parameter values.
@@ -423,13 +472,16 @@ class __$$RegisterDataImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$RegisterDataImpl implements _RegisterData {
   const _$RegisterDataImpl(
       {required this.name,
       required this.email,
       required this.password,
       required this.rePassword});
+
+  factory _$RegisterDataImpl.fromJson(Map<String, dynamic> json) =>
+      _$$RegisterDataImplFromJson(json);
 
   @override
   final String name;
@@ -458,6 +510,7 @@ class _$RegisterDataImpl implements _RegisterData {
                 other.rePassword == rePassword));
   }
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
       Object.hash(runtimeType, name, email, password, rePassword);
@@ -469,6 +522,13 @@ class _$RegisterDataImpl implements _RegisterData {
   @pragma('vm:prefer-inline')
   _$$RegisterDataImplCopyWith<_$RegisterDataImpl> get copyWith =>
       __$$RegisterDataImplCopyWithImpl<_$RegisterDataImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$RegisterDataImplToJson(
+      this,
+    );
+  }
 }
 
 abstract class _RegisterData implements RegisterData {
@@ -477,6 +537,9 @@ abstract class _RegisterData implements RegisterData {
       required final String email,
       required final String password,
       required final String rePassword}) = _$RegisterDataImpl;
+
+  factory _RegisterData.fromJson(Map<String, dynamic> json) =
+      _$RegisterDataImpl.fromJson;
 
   @override
   String get name;

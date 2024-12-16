@@ -3,10 +3,14 @@
 
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
-import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
+
+import '../../models/note_model.dart';
+import '../frb_generated.dart';
+
 part 'notes.freezed.dart';
+part 'notes.g.dart';
 
 @freezed
 class Note with _$Note {
@@ -21,4 +25,20 @@ class Note with _$Note {
     bool? isFavorite,
     String? tags,
   }) = _Note;
+
+  factory Note.fromJson(Map<String, Object?> json) => _$NoteFromJson(json);
+
+  factory Note.fromNoteModel(NoteModel note) {
+    return Note(
+      id: note.id,
+      name: note.name,
+      note: note.note,
+      isFavorite: note.isFavorite,
+      tags: note.tags?.join(','),
+      createdAt: note.createdAt,
+      createdBy: note.createdBy,
+      updatedAt: note.updatedAt,
+      updatedBy: note.updatedBy,
+    );
+  }
 }

@@ -14,6 +14,10 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
+IdentityCard _$IdentityCardFromJson(Map<String, dynamic> json) {
+  return _IdentityCard.fromJson(json);
+}
+
 /// @nodoc
 mixin _$IdentityCard {
   String? get id => throw _privateConstructorUsedError;
@@ -32,6 +36,9 @@ mixin _$IdentityCard {
   String? get state => throw _privateConstructorUsedError;
   bool? get isFavorite => throw _privateConstructorUsedError;
   String? get tags => throw _privateConstructorUsedError;
+
+  /// Serializes this IdentityCard to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
   /// Create a copy of IdentityCard
   /// with the given fields replaced by the non-null parameter values.
@@ -293,7 +300,7 @@ class __$$IdentityCardImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$IdentityCardImpl implements _IdentityCard {
   const _$IdentityCardImpl(
       {this.id,
@@ -312,6 +319,9 @@ class _$IdentityCardImpl implements _IdentityCard {
       this.state,
       this.isFavorite,
       this.tags});
+
+  factory _$IdentityCardImpl.fromJson(Map<String, dynamic> json) =>
+      _$$IdentityCardImplFromJson(json);
 
   @override
   final String? id;
@@ -384,6 +394,7 @@ class _$IdentityCardImpl implements _IdentityCard {
             (identical(other.tags, tags) || other.tags == tags));
   }
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -411,6 +422,13 @@ class _$IdentityCardImpl implements _IdentityCard {
   @pragma('vm:prefer-inline')
   _$$IdentityCardImplCopyWith<_$IdentityCardImpl> get copyWith =>
       __$$IdentityCardImplCopyWithImpl<_$IdentityCardImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$IdentityCardImplToJson(
+      this,
+    );
+  }
 }
 
 abstract class _IdentityCard implements IdentityCard {
@@ -431,6 +449,9 @@ abstract class _IdentityCard implements IdentityCard {
       final String? state,
       final bool? isFavorite,
       final String? tags}) = _$IdentityCardImpl;
+
+  factory _IdentityCard.fromJson(Map<String, dynamic> json) =
+      _$IdentityCardImpl.fromJson;
 
   @override
   String? get id;

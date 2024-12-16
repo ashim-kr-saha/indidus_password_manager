@@ -14,6 +14,10 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
+Login _$LoginFromJson(Map<String, dynamic> json) {
+  return _Login.fromJson(json);
+}
+
 /// @nodoc
 mixin _$Login {
   String? get id => throw _privateConstructorUsedError;
@@ -30,6 +34,9 @@ mixin _$Login {
   bool? get isFavorite => throw _privateConstructorUsedError;
   String? get tags => throw _privateConstructorUsedError;
   String? get apiKeys => throw _privateConstructorUsedError;
+
+  /// Serializes this Login to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
   /// Create a copy of Login
   /// with the given fields replaced by the non-null parameter values.
@@ -264,7 +271,7 @@ class __$$LoginImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$LoginImpl implements _Login {
   const _$LoginImpl(
       {this.id,
@@ -281,6 +288,9 @@ class _$LoginImpl implements _Login {
       this.isFavorite,
       this.tags,
       this.apiKeys});
+
+  factory _$LoginImpl.fromJson(Map<String, dynamic> json) =>
+      _$$LoginImplFromJson(json);
 
   @override
   final String? id;
@@ -345,6 +355,7 @@ class _$LoginImpl implements _Login {
             (identical(other.apiKeys, apiKeys) || other.apiKeys == apiKeys));
   }
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -370,6 +381,13 @@ class _$LoginImpl implements _Login {
   @pragma('vm:prefer-inline')
   _$$LoginImplCopyWith<_$LoginImpl> get copyWith =>
       __$$LoginImplCopyWithImpl<_$LoginImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$LoginImplToJson(
+      this,
+    );
+  }
 }
 
 abstract class _Login implements Login {
@@ -388,6 +406,8 @@ abstract class _Login implements Login {
       final bool? isFavorite,
       final String? tags,
       final String? apiKeys}) = _$LoginImpl;
+
+  factory _Login.fromJson(Map<String, dynamic> json) = _$LoginImpl.fromJson;
 
   @override
   String? get id;

@@ -1,0 +1,7 @@
+PUT http://127.0.0.1:8080/api/profile HTTP/1.1
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjM0NzI1MzEsImV4cCI6MTcyMzU1ODkzMSwidWlkIjoxfQ.j6zZEd3omiDPxEfPEets3jMz-X6tTVAP_ZcQAvzQudA
+
+{
+  "name": "Ashim Kumar Saha",
+  "gender": "Male"
+}

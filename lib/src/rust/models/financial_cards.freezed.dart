@@ -14,6 +14,10 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
+FinancialCard _$FinancialCardFromJson(Map<String, dynamic> json) {
+  return _FinancialCard.fromJson(json);
+}
+
 /// @nodoc
 mixin _$FinancialCard {
   String? get id => throw _privateConstructorUsedError;
@@ -33,6 +37,9 @@ mixin _$FinancialCard {
   String? get pin => throw _privateConstructorUsedError;
   bool? get isFavorite => throw _privateConstructorUsedError;
   String? get tags => throw _privateConstructorUsedError;
+
+  /// Serializes this FinancialCard to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
   /// Create a copy of FinancialCard
   /// with the given fields replaced by the non-null parameter values.
@@ -306,7 +313,7 @@ class __$$FinancialCardImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$FinancialCardImpl implements _FinancialCard {
   const _$FinancialCardImpl(
       {this.id,
@@ -326,6 +333,9 @@ class _$FinancialCardImpl implements _FinancialCard {
       this.pin,
       this.isFavorite,
       this.tags});
+
+  factory _$FinancialCardImpl.fromJson(Map<String, dynamic> json) =>
+      _$$FinancialCardImplFromJson(json);
 
   @override
   final String? id;
@@ -402,6 +412,7 @@ class _$FinancialCardImpl implements _FinancialCard {
             (identical(other.tags, tags) || other.tags == tags));
   }
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -430,6 +441,13 @@ class _$FinancialCardImpl implements _FinancialCard {
   @pragma('vm:prefer-inline')
   _$$FinancialCardImplCopyWith<_$FinancialCardImpl> get copyWith =>
       __$$FinancialCardImplCopyWithImpl<_$FinancialCardImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$FinancialCardImplToJson(
+      this,
+    );
+  }
 }
 
 abstract class _FinancialCard implements FinancialCard {
@@ -451,6 +469,9 @@ abstract class _FinancialCard implements FinancialCard {
       final String? pin,
       final bool? isFavorite,
       final String? tags}) = _$FinancialCardImpl;
+
+  factory _FinancialCard.fromJson(Map<String, dynamic> json) =
+      _$FinancialCardImpl.fromJson;
 
   @override
   String? get id;

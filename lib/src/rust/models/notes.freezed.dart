@@ -14,6 +14,10 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
+Note _$NoteFromJson(Map<String, dynamic> json) {
+  return _Note.fromJson(json);
+}
+
 /// @nodoc
 mixin _$Note {
   String? get id => throw _privateConstructorUsedError;
@@ -25,6 +29,9 @@ mixin _$Note {
   String? get note => throw _privateConstructorUsedError;
   bool? get isFavorite => throw _privateConstructorUsedError;
   String? get tags => throw _privateConstructorUsedError;
+
+  /// Serializes this Note to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
   /// Create a copy of Note
   /// with the given fields replaced by the non-null parameter values.
@@ -198,7 +205,7 @@ class __$$NoteImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$NoteImpl implements _Note {
   const _$NoteImpl(
       {this.id,
@@ -210,6 +217,9 @@ class _$NoteImpl implements _Note {
       this.note,
       this.isFavorite,
       this.tags});
+
+  factory _$NoteImpl.fromJson(Map<String, dynamic> json) =>
+      _$$NoteImplFromJson(json);
 
   @override
   final String? id;
@@ -256,6 +266,7 @@ class _$NoteImpl implements _Note {
             (identical(other.tags, tags) || other.tags == tags));
   }
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, createdAt, createdBy,
       updatedAt, updatedBy, name, note, isFavorite, tags);
@@ -267,6 +278,13 @@ class _$NoteImpl implements _Note {
   @pragma('vm:prefer-inline')
   _$$NoteImplCopyWith<_$NoteImpl> get copyWith =>
       __$$NoteImplCopyWithImpl<_$NoteImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$NoteImplToJson(
+      this,
+    );
+  }
 }
 
 abstract class _Note implements Note {
@@ -280,6 +298,8 @@ abstract class _Note implements Note {
       final String? note,
       final bool? isFavorite,
       final String? tags}) = _$NoteImpl;
+
+  factory _Note.fromJson(Map<String, dynamic> json) = _$NoteImpl.fromJson;
 
   @override
   String? get id;

@@ -3,10 +3,13 @@
 
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
-import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
+
+import '../frb_generated.dart';
+
 part 'tags.freezed.dart';
+part 'tags.g.dart';
 
 @freezed
 class Tag with _$Tag {
@@ -18,4 +21,11 @@ class Tag with _$Tag {
     String? updatedBy,
     required String name,
   }) = _Tag;
+
+  factory Tag.fromJson(Map<String, dynamic> json) => _$TagFromJson(json);
+
+  @override
+  String toString() {
+    return name;
+  }
 }

@@ -14,6 +14,10 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
+Tag _$TagFromJson(Map<String, dynamic> json) {
+  return _Tag.fromJson(json);
+}
+
 /// @nodoc
 mixin _$Tag {
   String? get id => throw _privateConstructorUsedError;
@@ -22,6 +26,9 @@ mixin _$Tag {
   int? get updatedAt => throw _privateConstructorUsedError;
   String? get updatedBy => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
+
+  /// Serializes this Tag to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
   /// Create a copy of Tag
   /// with the given fields replaced by the non-null parameter values.
@@ -156,7 +163,7 @@ class __$$TagImplCopyWithImpl<$Res> extends _$TagCopyWithImpl<$Res, _$TagImpl>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$TagImpl implements _Tag {
   const _$TagImpl(
       {this.id,
@@ -165,6 +172,9 @@ class _$TagImpl implements _Tag {
       this.updatedAt,
       this.updatedBy,
       required this.name});
+
+  factory _$TagImpl.fromJson(Map<String, dynamic> json) =>
+      _$$TagImplFromJson(json);
 
   @override
   final String? id;
@@ -178,11 +188,6 @@ class _$TagImpl implements _Tag {
   final String? updatedBy;
   @override
   final String name;
-
-  @override
-  String toString() {
-    return 'Tag(id: $id, createdAt: $createdAt, createdBy: $createdBy, updatedAt: $updatedAt, updatedBy: $updatedBy, name: $name)';
-  }
 
   @override
   bool operator ==(Object other) {
@@ -201,6 +206,7 @@ class _$TagImpl implements _Tag {
             (identical(other.name, name) || other.name == name));
   }
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType, id, createdAt, createdBy, updatedAt, updatedBy, name);
@@ -212,6 +218,13 @@ class _$TagImpl implements _Tag {
   @pragma('vm:prefer-inline')
   _$$TagImplCopyWith<_$TagImpl> get copyWith =>
       __$$TagImplCopyWithImpl<_$TagImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$TagImplToJson(
+      this,
+    );
+  }
 }
 
 abstract class _Tag implements Tag {
@@ -222,6 +235,8 @@ abstract class _Tag implements Tag {
       final int? updatedAt,
       final String? updatedBy,
       required final String name}) = _$TagImpl;
+
+  factory _Tag.fromJson(Map<String, dynamic> json) = _$TagImpl.fromJson;
 
   @override
   String? get id;

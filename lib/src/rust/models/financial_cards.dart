@@ -3,10 +3,14 @@
 
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
-import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
+
+import '../../models/financial_card_model.dart';
+import '../frb_generated.dart';
+
 part 'financial_cards.freezed.dart';
+part 'financial_cards.g.dart';
 
 @freezed
 class FinancialCard with _$FinancialCard {
@@ -29,4 +33,30 @@ class FinancialCard with _$FinancialCard {
     bool? isFavorite,
     String? tags,
   }) = _FinancialCard;
+
+  factory FinancialCard.fromJson(Map<String, dynamic> json) =>
+      _$FinancialCardFromJson(json);
+
+  factory FinancialCard.fromFinancialCardModel(
+      FinancialCardModel financialCard) {
+    return FinancialCard(
+      id: financialCard.id,
+      createdAt: financialCard.createdAt,
+      createdBy: financialCard.createdBy,
+      updatedAt: financialCard.updatedAt,
+      updatedBy: financialCard.updatedBy,
+      cardHolderName: financialCard.cardHolderName,
+      cardNumber: financialCard.cardNumber,
+      cardProviderName: financialCard.cardProviderName,
+      cardType: financialCard.cardType,
+      cvv: financialCard.cvv,
+      expiryDate: financialCard.expiryDate,
+      issueDate: financialCard.issueDate,
+      name: financialCard.name,
+      note: financialCard.note,
+      pin: financialCard.pin,
+      isFavorite: financialCard.isFavorite,
+      tags: financialCard.tags?.join(','),
+    );
+  }
 }

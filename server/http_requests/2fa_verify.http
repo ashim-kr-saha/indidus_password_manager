@@ -1,0 +1,8 @@
+POST http://127.0.0.1:8080/api/2fa/verify HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjM0NzI1MzEsImV4cCI6MTcyMzU1ODkzMSwidWlkIjoxfQ.j6zZEd3omiDPxEfPEets3jMz-X6tTVAP_ZcQAvzQudA
+
+{
+  "username": "ashimsaha",
+  "token": "903863"
+}
