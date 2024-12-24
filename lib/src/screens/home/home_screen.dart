@@ -49,7 +49,7 @@ class HomeScreen extends ConsumerWidget {
         ],
       ),
       bottomNavigationBar: screenSize == ScreenSize.small
-          ? _buildBottomNavigationBar(ref)
+          ? _buildBottomNavigationBar(context, ref)
           : null,
     );
   }
@@ -120,37 +120,43 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildBottomNavigationBar(WidgetRef ref) {
-    // Update method signature
-    return BottomNavigationBar(
-      currentIndex: ref.watch(selectedIndexProvider),
-      onTap: (int index) {
-        ref
-            .read(selectedIndexProvider.notifier)
-            .selectIndex(index); // Update state
-      },
-      items: const [
-        BottomNavigationBarItem(
-          icon: loginIcon,
-          label: 'Logins',
+  Widget _buildBottomNavigationBar(BuildContext context, WidgetRef ref) {
+    return Theme(
+      data: Theme.of(context).copyWith(
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          selectedItemColor: Theme.of(context).colorScheme.primary,
+          unselectedItemColor: Theme.of(context).colorScheme.onSurface,
         ),
-        BottomNavigationBarItem(
-          icon: financialCardIcon,
-          label: 'Cards',
-        ),
-        BottomNavigationBarItem(
-          icon: identityCardIcon,
-          label: 'Identity',
-        ),
-        BottomNavigationBarItem(
-          icon: noteIcon,
-          label: 'Notes',
-        ),
-        BottomNavigationBarItem(
-          icon: settingsIcon,
-          label: 'Settings',
-        ),
-      ],
+      ),
+      child: BottomNavigationBar(
+        currentIndex: ref.watch(selectedIndexProvider),
+        onTap: (int index) {
+          ref.read(selectedIndexProvider.notifier).selectIndex(index);
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: loginIcon,
+            label: 'Logins',
+          ),
+          BottomNavigationBarItem(
+            icon: financialCardIcon,
+            label: 'Cards',
+          ),
+          BottomNavigationBarItem(
+            icon: identityCardIcon,
+            label: 'Identity',
+          ),
+          BottomNavigationBarItem(
+            icon: noteIcon,
+            label: 'Notes',
+          ),
+          BottomNavigationBarItem(
+            icon: settingsIcon,
+            label: 'Settings',
+          ),
+        ],
+      ),
     );
   }
 
