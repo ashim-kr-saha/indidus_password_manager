@@ -63,7 +63,13 @@ class NoteList extends ConsumerWidget {
           child: _buildRefreshableNoteListView(context, screenSize, ref,
               filteredNoteItems, selectedNotes, tags, allTagsMap),
         ),
-        const SizedBox(width: 20),
+        TweenAnimationBuilder(
+          duration: const Duration(milliseconds: 300),
+          tween: Tween<double>(begin: 0, end: 20),
+          builder: (context, double value, child) {
+            return SizedBox(width: value);
+          },
+        ),
         Expanded(
           flex: 2,
           child: _buildDetailView(selectedDetails, screenSize, allTagsMap),
@@ -176,10 +182,26 @@ class NoteList extends ConsumerWidget {
       Map<String, Tag> allTagsMap) {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
-        (context, index) => _buildNoteListItem(context, screenSize, ref,
-            filteredNoteItems[index], selectedNotes, allTagsMap),
+        (context, index) => _buildAnimatedNoteListItem(context, screenSize, ref,
+            filteredNoteItems[index], selectedNotes, allTagsMap, index),
         childCount: filteredNoteItems.length,
       ),
+    );
+  }
+
+  Widget _buildAnimatedNoteListItem(
+      BuildContext context,
+      ScreenSize screenSize,
+      WidgetRef ref,
+      NoteModel item,
+      Set<String> selectedNotes,
+      Map<String, Tag> allTagsMap,
+      int index) {
+    return AnimatedNoteListItem(
+      key: ValueKey(item.id),
+      index: index,
+      child: _buildNoteListItem(
+          context, screenSize, ref, item, selectedNotes, allTagsMap),
     );
   }
 
@@ -218,11 +240,31 @@ class NoteList extends ConsumerWidget {
 
   Widget _buildDetailView(NoteModel? selectedDetails, ScreenSize screenSize,
       Map<String, Tag> allTags) {
-    return Center(
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 300),
+      transitionBuilder: (Widget child, Animation<double> animation) {
+        return FadeTransition(
+          opacity: animation,
+          child: SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(0.3, 0),
+              end: Offset.zero,
+            ).animate(CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeOutCubic,
+            )),
+            child: child,
+          ),
+        );
+      },
       child: selectedDetails == null
-          ? const Text('Select an item to see details',
-              style: TextStyle(fontSize: 16, color: Colors.grey))
+          ? const Center(
+              key: ValueKey('empty'),
+              child: Text('Select an item to see details',
+                  style: TextStyle(fontSize: 16, color: Colors.grey)),
+            )
           : NoteDetailPage(
+              key: ValueKey(selectedDetails.id),
               note: selectedDetails,
               screenSize: screenSize,
               allTagsMap: allTags),
@@ -483,5 +525,87 @@ class NoteList extends ConsumerWidget {
 
   Map<String, Tag> _createAllTagsMap(List<Tag> tags) {
     return Map.fromEntries(tags.map((tag) => MapEntry(tag.id!, tag)));
+  }
+}
+
+class AnimatedNoteListItem extends StatefulWidget {
+  final int index;
+  final Widget child;
+
+  const AnimatedNoteListItem({
+    super.key,
+    required this.index,
+    required this.child,
+  });
+
+  @override
+  State<AnimatedNoteListItem> createState() => _AnimatedNoteListItemState();
+}
+
+class _AnimatedNoteListItemState extends State<AnimatedNoteListItem>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _fadeAnimation;
+  late final Animation<Offset> _slideAnimation;
+  late final Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 400),
+      vsync: this,
+    );
+
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(0.0, 0.8, curve: Curves.easeOut),
+    ));
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0.0, 0.1),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(0.0, 0.8, curve: Curves.easeOutCubic),
+    ));
+
+    _scaleAnimation = Tween<double>(
+      begin: 0.95,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(0.0, 0.8, curve: Curves.easeOutCubic),
+    ));
+
+    // Delay the animation start based on the item's index
+    Future.delayed(Duration(milliseconds: 30 * widget.index), () {
+      if (mounted) {
+        _controller.forward();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _fadeAnimation,
+      child: SlideTransition(
+        position: _slideAnimation,
+        child: ScaleTransition(
+          scale: _scaleAnimation,
+          child: widget.child,
+        ),
+      ),
+    );
   }
 }

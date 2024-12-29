@@ -10,7 +10,7 @@ import '../../widgets/detail_tile.dart';
 import '../../widgets/tag_view.dart';
 import 'note_form.dart';
 
-class NoteDetailPage extends ConsumerWidget {
+class NoteDetailPage extends ConsumerStatefulWidget {
   final NoteModel note;
   final ScreenSize screenSize;
   final Map<String, Tag> allTagsMap;
@@ -23,18 +23,68 @@ class NoteDetailPage extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<NoteDetailPage> createState() => _NoteDetailPageState();
+}
+
+class _NoteDetailPageState extends ConsumerState<NoteDetailPage>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
+
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOut,
+    ));
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.1),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOutCubic,
+    ));
+
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(context, ref),
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildDetailsList(context),
-              ],
+          child: FadeTransition(
+            opacity: _fadeAnimation,
+            child: SlideTransition(
+              position: _slideAnimation,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildDetailsList(context),
+                  ],
+                ),
+              ),
             ),
           ),
         ),
@@ -47,7 +97,7 @@ class NoteDetailPage extends ConsumerWidget {
       title: Row(
         children: [
           Text(
-            note.name,
+            widget.note.name,
             style: const TextStyle(fontWeight: FontWeight.bold),
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
@@ -55,10 +105,10 @@ class NoteDetailPage extends ConsumerWidget {
             textAlign: TextAlign.left,
           ),
           const SizedBox(width: 8),
-          if (note.isFavorite)
+          if (widget.note.isFavorite)
             Icon(
               Icons.favorite,
-              color: note.isFavorite ? Colors.red : Colors.grey,
+              color: widget.note.isFavorite ? Colors.red : Colors.grey,
             ),
         ],
       ),
@@ -72,7 +122,8 @@ class NoteDetailPage extends ConsumerWidget {
         ),
         IconButton(
           icon: const Icon(Icons.edit),
-          onPressed: () => _openForm(context, screenSize, allTagsMap, note),
+          onPressed: () => _openForm(
+              context, widget.screenSize, widget.allTagsMap, widget.note),
           tooltip: 'Edit',
         ),
         IconButton(
@@ -86,25 +137,25 @@ class NoteDetailPage extends ConsumerWidget {
 
   void _copyAndCreateNew(BuildContext context, WidgetRef ref) {
     final newNote = NoteModel(
-      name: '${note.name} (Copy)',
-      note: note.note,
-      tags: note.tags,
-      isFavorite: note.isFavorite,
+      name: '${widget.note.name} (Copy)',
+      note: widget.note.note,
+      tags: widget.note.tags,
+      isFavorite: widget.note.isFavorite,
     );
 
-    _openForm(context, screenSize, allTagsMap, newNote);
+    _openForm(context, widget.screenSize, widget.allTagsMap, newNote);
   }
 
   Widget _buildDetailsList(BuildContext context) {
     final details = [
       {
         'name': 'Name',
-        'note': note.name,
+        'note': widget.note.name,
         'icon': Icons.note,
       },
       {
         'name': 'Content',
-        'note': note.note ?? '',
+        'note': widget.note.note ?? '',
         'icon': Icons.note,
       },
     ];
@@ -135,7 +186,7 @@ class NoteDetailPage extends ConsumerWidget {
   }
 
   Widget _buildTagsSection(BuildContext context) {
-    if (note.tags == null || note.tags!.isEmpty) {
+    if (widget.note.tags == null || widget.note.tags!.isEmpty) {
       return const DetailTile(
         title: 'Tags',
         content: 'No tags available',
@@ -145,8 +196,8 @@ class NoteDetailPage extends ConsumerWidget {
     }
 
     return TagsView(
-      tags: note.tags,
-      allTagsMap: allTagsMap,
+      tags: widget.note.tags,
+      allTagsMap: widget.allTagsMap,
     );
   }
 
@@ -209,7 +260,7 @@ class NoteDetailPage extends ConsumerWidget {
 
   Future<void> _deleteNote(BuildContext context, WidgetRef ref) async {
     try {
-      await ref.read(noteNotifierProvider.notifier).deleteNote(note.id!);
+      await ref.read(noteNotifierProvider.notifier).deleteNote(widget.note.id!);
       if (context.mounted) {
         Navigator.of(context).pop();
         ScaffoldMessenger.of(context).showSnackBar(

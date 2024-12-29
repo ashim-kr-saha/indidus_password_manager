@@ -18,10 +18,14 @@ class NoteForm extends ConsumerStatefulWidget {
   ConsumerState<NoteForm> createState() => _NoteFormState();
 }
 
-class _NoteFormState extends ConsumerState<NoteForm> {
+class _NoteFormState extends ConsumerState<NoteForm>
+    with SingleTickerProviderStateMixin {
   late TextEditingController _titleController;
   late TextEditingController _contentController;
   late List<Tag> _selectedTags;
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
 
   @override
   void initState() {
@@ -30,12 +34,36 @@ class _NoteFormState extends ConsumerState<NoteForm> {
     _contentController = TextEditingController(text: widget.note?.note ?? '');
     _selectedTags =
         widget.note?.tags?.map((e) => widget.allTagsMap[e]!).toList() ?? [];
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
+
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOut,
+    ));
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.1),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOutCubic,
+    ));
+
+    _animationController.forward();
   }
 
   @override
   void dispose() {
     _titleController.dispose();
     _contentController.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -47,91 +75,97 @@ class _NoteFormState extends ConsumerState<NoteForm> {
       appBar: screenSize == ScreenSize.small
           ? AppBar(title: Text(_isEditing() ? 'Edit Note' : 'Add Note'))
           : null,
-      body: Column(
-        children: [
-          screenSize == ScreenSize.small
-              ? Container()
-              : Text(
-                  _isEditing() ? "Edit Note" : "New Note",
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.titleLarge,
+      body: FadeTransition(
+        opacity: _fadeAnimation,
+        child: SlideTransition(
+          position: _slideAnimation,
+          child: Column(
+            children: [
+              screenSize == ScreenSize.small
+                  ? Container()
+                  : Text(
+                      _isEditing() ? "Edit Note" : "New Note",
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextField(
+                            controller: _titleController,
+                            decoration: const InputDecoration(
+                              labelText: 'Title',
+                              border: OutlineInputBorder(),
+                              prefixIcon: Icon(Icons.title),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextField(
+                            controller: _contentController,
+                            maxLines: 5,
+                            decoration: const InputDecoration(
+                              labelText: 'Content',
+                              border: OutlineInputBorder(),
+                              prefixIcon: Icon(Icons.note),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TagInput(
+                            initialTags: _selectedTags,
+                            onTagsChanged: (tags) {
+                              setState(() {
+                                _selectedTags = tags;
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
+              ),
+              const Divider(height: 20, thickness: 2, color: Colors.grey),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                        controller: _titleController,
-                        decoration: const InputDecoration(
-                          labelText: 'Title',
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.title),
+                    if (_isEditing())
+                      TextButton(
+                        onPressed: () => _showDeleteConfirmation(context),
+                        child: const Text('Delete',
+                            style: TextStyle(color: Colors.red)),
+                      ),
+                    Row(
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text('Cancel'),
                         ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                        controller: _contentController,
-                        maxLines: 5,
-                        decoration: const InputDecoration(
-                          labelText: 'Content',
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.note),
+                        const SizedBox(width: 8),
+                        ElevatedButton(
+                          onPressed: _saveNote,
+                          child: Text(_isEditing() ? 'Update' : 'Add'),
                         ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TagInput(
-                        initialTags: _selectedTags,
-                        onTagsChanged: (tags) {
-                          setState(() {
-                            _selectedTags = tags;
-                          });
-                        },
-                      ),
+                      ],
                     ),
                   ],
                 ),
               ),
-            ),
+            ],
           ),
-          const Divider(height: 20, thickness: 2, color: Colors.grey),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                if (_isEditing())
-                  TextButton(
-                    onPressed: () => _showDeleteConfirmation(context),
-                    child: const Text('Delete',
-                        style: TextStyle(color: Colors.red)),
-                  ),
-                Row(
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text('Cancel'),
-                    ),
-                    const SizedBox(width: 8),
-                    ElevatedButton(
-                      onPressed: _saveNote,
-                      child: Text(_isEditing() ? 'Update' : 'Add'),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
