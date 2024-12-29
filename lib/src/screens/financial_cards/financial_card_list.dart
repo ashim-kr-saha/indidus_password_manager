@@ -189,15 +189,32 @@ class FinancialCardList extends ConsumerWidget {
       Map<String, Tag> allTagsMap) {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
-        (context, index) => _buildFinancialCardListItem(
+        (context, index) => _buildAnimatedFinancialCardListItem(
             context,
             screenSize,
             ref,
             filteredFinancialCardItems[index],
             selectedFinancialCards,
-            allTagsMap),
+            allTagsMap,
+            index),
         childCount: filteredFinancialCardItems.length,
       ),
+    );
+  }
+
+  Widget _buildAnimatedFinancialCardListItem(
+      BuildContext context,
+      ScreenSize screenSize,
+      WidgetRef ref,
+      FinancialCardModel item,
+      Set<String> selectedFinancialCards,
+      Map<String, Tag> allTagsMap,
+      int index) {
+    return AnimatedFinancialCardListItem(
+      key: ValueKey(item.id),
+      index: index,
+      child: _buildFinancialCardListItem(
+          context, screenSize, ref, item, selectedFinancialCards, allTagsMap),
     );
   }
 
@@ -236,11 +253,31 @@ class FinancialCardList extends ConsumerWidget {
 
   Widget _buildDetailView(FinancialCardModel? selectedDetails,
       ScreenSize screenSize, Map<String, Tag> allTags) {
-    return Center(
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 300),
+      transitionBuilder: (Widget child, Animation<double> animation) {
+        return FadeTransition(
+          opacity: animation,
+          child: SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(0.3, 0),
+              end: Offset.zero,
+            ).animate(CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeOutCubic,
+            )),
+            child: child,
+          ),
+        );
+      },
       child: selectedDetails == null
-          ? const Text('Select an item to see details',
-              style: TextStyle(fontSize: 16, color: Colors.grey))
+          ? const Center(
+              key: ValueKey('empty'),
+              child: Text('Select an item to see details',
+                  style: TextStyle(fontSize: 16, color: Colors.grey)),
+            )
           : FinancialCardDetailPage(
+              key: ValueKey(selectedDetails.id),
               data: selectedDetails,
               screenSize: screenSize,
               allTagsMap: allTags),
@@ -507,5 +544,88 @@ class FinancialCardList extends ConsumerWidget {
 
   Map<String, Tag> _createAllTagsMap(List<Tag> tags) {
     return Map.fromEntries(tags.map((tag) => MapEntry(tag.id!, tag)));
+  }
+}
+
+class AnimatedFinancialCardListItem extends StatefulWidget {
+  final int index;
+  final Widget child;
+
+  const AnimatedFinancialCardListItem({
+    super.key,
+    required this.index,
+    required this.child,
+  });
+
+  @override
+  State<AnimatedFinancialCardListItem> createState() =>
+      _AnimatedFinancialCardListItemState();
+}
+
+class _AnimatedFinancialCardListItemState
+    extends State<AnimatedFinancialCardListItem>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _fadeAnimation;
+  late final Animation<Offset> _slideAnimation;
+  late final Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 400),
+      vsync: this,
+    );
+
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(0.0, 0.8, curve: Curves.easeOut),
+    ));
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0.0, 0.1),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(0.0, 0.8, curve: Curves.easeOutCubic),
+    ));
+
+    _scaleAnimation = Tween<double>(
+      begin: 0.95,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(0.0, 0.8, curve: Curves.easeOutCubic),
+    ));
+
+    Future.delayed(Duration(milliseconds: 30 * widget.index), () {
+      if (mounted) {
+        _controller.forward();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _fadeAnimation,
+      child: SlideTransition(
+        position: _slideAnimation,
+        child: ScaleTransition(
+          scale: _scaleAnimation,
+          child: widget.child,
+        ),
+      ),
+    );
   }
 }

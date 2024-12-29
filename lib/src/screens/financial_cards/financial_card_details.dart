@@ -10,7 +10,7 @@ import '../../widgets/detail_tile.dart';
 import '../../widgets/tag_view.dart';
 import 'financial_card_form.dart';
 
-class FinancialCardDetailPage extends ConsumerWidget {
+class FinancialCardDetailPage extends ConsumerStatefulWidget {
   final FinancialCardModel data;
   final ScreenSize screenSize;
   final Map<String, Tag> allTagsMap;
@@ -23,18 +23,69 @@ class FinancialCardDetailPage extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<FinancialCardDetailPage> createState() =>
+      _FinancialCardDetailPageState();
+}
+
+class _FinancialCardDetailPageState
+    extends ConsumerState<FinancialCardDetailPage>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
+
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOut,
+    ));
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.1),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOutCubic,
+    ));
+
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(context, data.isFavorite ?? false, ref),
+      appBar: _buildAppBar(context, widget.data.isFavorite ?? false, ref),
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildDetailsList(context),
-              ],
+          child: FadeTransition(
+            opacity: _fadeAnimation,
+            child: SlideTransition(
+              position: _slideAnimation,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildDetailsList(context),
+                  ],
+                ),
+              ),
             ),
           ),
         ),
@@ -51,7 +102,7 @@ class FinancialCardDetailPage extends ConsumerWidget {
       title: Row(
         children: [
           Text(
-            data.name,
+            widget.data.name,
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           const SizedBox(width: 8),
@@ -70,7 +121,8 @@ class FinancialCardDetailPage extends ConsumerWidget {
         ),
         IconButton(
           icon: const Icon(Icons.edit),
-          onPressed: () => _openForm(context, screenSize, allTagsMap, data),
+          onPressed: () => _openForm(
+              context, widget.screenSize, widget.allTagsMap, widget.data),
         ),
         IconButton(
           icon: const Icon(Icons.delete),
@@ -83,20 +135,20 @@ class FinancialCardDetailPage extends ConsumerWidget {
 
   void _copyAndCreateNew(BuildContext context) {
     final newData = FinancialCardModel(
-      name: '${data.name} (Copy)',
-      cardHolderName: data.cardHolderName,
-      cardNumber: data.cardNumber,
-      cardProviderName: data.cardProviderName,
-      cardType: data.cardType,
-      cvv: data.cvv,
-      pin: data.pin,
-      expiryDate: data.expiryDate,
-      issueDate: data.issueDate,
-      note: data.note,
-      tags: data.tags,
-      isFavorite: data.isFavorite,
+      name: '${widget.data.name} (Copy)',
+      cardHolderName: widget.data.cardHolderName,
+      cardNumber: widget.data.cardNumber,
+      cardProviderName: widget.data.cardProviderName,
+      cardType: widget.data.cardType,
+      cvv: widget.data.cvv,
+      pin: widget.data.pin,
+      expiryDate: widget.data.expiryDate,
+      issueDate: widget.data.issueDate,
+      note: widget.data.note,
+      tags: widget.data.tags,
+      isFavorite: widget.data.isFavorite,
     );
-    _openForm(context, screenSize, allTagsMap, newData);
+    _openForm(context, widget.screenSize, widget.allTagsMap, newData);
   }
 
   void _openForm(
@@ -135,47 +187,47 @@ class FinancialCardDetailPage extends ConsumerWidget {
     final details = [
       {
         'title': 'Card Holder Name',
-        'content': data.cardHolderName,
+        'content': widget.data.cardHolderName,
         'icon': Icons.person,
       },
       {
         'title': 'Card Number',
-        'content': data.cardNumber,
+        'content': widget.data.cardNumber,
         'icon': Icons.numbers,
       },
       {
         'title': 'Card Provider Name',
-        'content': data.cardProviderName,
+        'content': widget.data.cardProviderName,
         'icon': Icons.business,
       },
       {
         'title': 'Card Type',
-        'content': data.cardType,
+        'content': widget.data.cardType,
         'icon': Icons.credit_card,
       },
       {
         'title': 'CVV',
-        'content': data.cvv,
+        'content': widget.data.cvv,
         'icon': Icons.pin,
       },
       {
         'title': 'Pin',
-        'content': data.pin,
+        'content': widget.data.pin,
         'icon': Icons.pin,
       },
       {
         'title': 'Expiry Date',
-        'content': data.expiryDate,
+        'content': widget.data.expiryDate,
         'icon': Icons.calendar_month,
       },
       {
         'title': 'Issue Date',
-        'content': data.issueDate,
+        'content': widget.data.issueDate,
         'icon': Icons.calendar_month,
       },
       {
         'title': 'Note',
-        'content': data.note ?? '',
+        'content': widget.data.note ?? '',
         'icon': Icons.note,
       },
     ];
@@ -199,7 +251,7 @@ class FinancialCardDetailPage extends ConsumerWidget {
             },
           ),
           const Divider(),
-          TagsView(tags: data.tags, allTagsMap: allTagsMap),
+          TagsView(tags: widget.data.tags, allTagsMap: widget.allTagsMap),
         ],
       ),
     );
@@ -233,7 +285,7 @@ class FinancialCardDetailPage extends ConsumerWidget {
     try {
       await ref
           .read(financialCardNotifierProvider.notifier)
-          .deleteFinancialCard(data.id!);
+          .deleteFinancialCard(widget.data.id!);
       if (context.mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
