@@ -64,11 +64,17 @@ class LoginList extends ConsumerWidget {
           child: _buildRefreshableLoginListView(context, screenSize, ref,
               filteredLoginItems, selectedLogins, tags, allTagsMap),
         ),
-        const SizedBox(width: 20),
+        TweenAnimationBuilder(
+          duration: const Duration(milliseconds: 300),
+          tween: Tween<double>(begin: 0, end: 20),
+          builder: (context, double value, child) {
+            return SizedBox(width: value);
+          },
+        ),
         Expanded(
           flex: 2,
           child: _buildDetailView(selectedDetails, screenSize, allTagsMap),
-        )
+        ),
       ],
     );
   }
@@ -238,16 +244,42 @@ class LoginList extends ConsumerWidget {
     }
   }
 
-  Widget _buildDetailView(LoginModel? selectedDetails, ScreenSize screenSize,
-      Map<String, Tag> allTags) {
-    return Center(
+  Widget _buildDetailView(
+    LoginModel? selectedDetails,
+    ScreenSize screenSize,
+    Map<String, Tag> allTags,
+  ) {
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 300),
+      transitionBuilder: (Widget child, Animation<double> animation) {
+        return FadeTransition(
+          opacity: animation,
+          child: SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(0.3, 0),
+              end: Offset.zero,
+            ).animate(CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeOutCubic,
+            )),
+            child: child,
+          ),
+        );
+      },
       child: selectedDetails == null
-          ? const Text('Select an item to see details',
-              style: TextStyle(fontSize: 16, color: Colors.grey))
+          ? const Center(
+              key: ValueKey('empty'),
+              child: Text(
+                'Select an item to see details',
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+            )
           : LoginDetailPage(
+              key: ValueKey(selectedDetails.id),
               login: selectedDetails,
               screenSize: screenSize,
-              allTagsMap: allTags),
+              allTagsMap: allTags,
+            ),
     );
   }
 
@@ -458,8 +490,11 @@ class LoginList extends ConsumerWidget {
   }
 
   void _openForm(
-      BuildContext context, ScreenSize screenSize, Map<String, Tag> allTagsMap,
-      {LoginModel? loginData}) {
+    BuildContext context,
+    ScreenSize screenSize,
+    Map<String, Tag> allTagsMap, {
+    LoginModel? loginData,
+  }) {
     if (screenSize == ScreenSize.small) {
       Navigator.push(
         context,
@@ -469,14 +504,31 @@ class LoginList extends ConsumerWidget {
         ),
       );
     } else {
-      showDialog(
+      showGeneralDialog(
         context: context,
-        builder: (context) => AlertDialog(
-          content: SizedBox(
-            width: smallScreenWidth.toDouble(),
-            child: LoginForm(login: loginData, allTagsMap: allTagsMap),
-          ),
-        ),
+        barrierDismissible: true,
+        barrierLabel:
+            MaterialLocalizations.of(context).modalBarrierDismissLabel,
+        barrierColor: Colors.black54,
+        transitionDuration: const Duration(milliseconds: 300),
+        pageBuilder: (context, animation, secondaryAnimation) {
+          return FadeTransition(
+            opacity: animation,
+            child: ScaleTransition(
+              scale:
+                  Tween<double>(begin: 0.95, end: 1.0).animate(CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeOutCubic,
+              )),
+              child: AlertDialog(
+                content: SizedBox(
+                  width: smallScreenWidth.toDouble(),
+                  child: LoginForm(login: loginData, allTagsMap: allTagsMap),
+                ),
+              ),
+            ),
+          );
+        },
       );
     }
   }

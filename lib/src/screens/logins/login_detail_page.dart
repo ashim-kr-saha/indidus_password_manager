@@ -10,7 +10,7 @@ import '../../widgets/detail_tile.dart';
 import '../../widgets/tag_view.dart';
 import 'login_form.dart';
 
-class LoginDetailPage extends ConsumerWidget {
+class LoginDetailPage extends ConsumerStatefulWidget {
   final LoginModel login;
   final ScreenSize screenSize;
   final Map<String, Tag> allTagsMap;
@@ -23,18 +23,67 @@ class LoginDetailPage extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<LoginDetailPage> createState() => _LoginDetailPageState();
+}
+
+class _LoginDetailPageState extends ConsumerState<LoginDetailPage>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
+
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOut,
+    ));
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.1),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOutCubic,
+    ));
+
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(context, ref),
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildDetailsList(context),
-              ],
+          child: FadeTransition(
+            opacity: _fadeAnimation,
+            child: SlideTransition(
+              position: _slideAnimation,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    _buildDetailsList(context),
+                  ],
+                ),
+              ),
             ),
           ),
         ),
@@ -47,7 +96,7 @@ class LoginDetailPage extends ConsumerWidget {
       title: Row(
         children: [
           Text(
-            login.name,
+            widget.login.name,
             style: const TextStyle(fontWeight: FontWeight.bold),
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
@@ -55,10 +104,10 @@ class LoginDetailPage extends ConsumerWidget {
             textAlign: TextAlign.left,
           ),
           const SizedBox(width: 8),
-          if (login.isFavorite)
+          if (widget.login.isFavorite)
             Icon(
               Icons.favorite,
-              color: login.isFavorite ? Colors.red : Colors.grey,
+              color: widget.login.isFavorite ? Colors.red : Colors.grey,
             ),
         ],
       ),
@@ -72,7 +121,8 @@ class LoginDetailPage extends ConsumerWidget {
         ),
         IconButton(
           icon: const Icon(Icons.edit),
-          onPressed: () => _openForm(context, screenSize, allTagsMap, login),
+          onPressed: () => _openForm(
+              context, widget.screenSize, widget.allTagsMap, widget.login),
           tooltip: 'Edit',
         ),
         IconButton(
@@ -88,27 +138,27 @@ class LoginDetailPage extends ConsumerWidget {
     final details = [
       {
         'title': 'Username',
-        'content': login.username,
+        'content': widget.login.username,
         'icon': Icons.person,
       },
       {
         'title': 'Password',
-        'content': login.password ?? '',
+        'content': widget.login.password ?? '',
         'icon': Icons.lock,
       },
       {
         'title': 'Password Hint',
-        'content': login.passwordHint ?? '',
+        'content': widget.login.passwordHint ?? '',
         'icon': Icons.help_outline,
       },
       {
         'title': 'URL',
-        'content': login.url ?? '',
+        'content': widget.login.url ?? '',
         'icon': Icons.link,
       },
       {
         'title': 'Note',
-        'content': login.note ?? '',
+        'content': widget.login.note ?? '',
         'icon': Icons.note,
       },
     ];
@@ -142,7 +192,7 @@ class LoginDetailPage extends ConsumerWidget {
   }
 
   Widget _buildTagsSection(BuildContext context) {
-    if (login.tags == null || login.tags!.isEmpty) {
+    if (widget.login.tags == null || widget.login.tags!.isEmpty) {
       return const DetailTile(
         title: 'Tags',
         content: 'No tags available',
@@ -152,13 +202,13 @@ class LoginDetailPage extends ConsumerWidget {
     }
 
     return TagsView(
-      tags: login.tags,
-      allTagsMap: allTagsMap,
+      tags: widget.login.tags,
+      allTagsMap: widget.allTagsMap,
     );
   }
 
   Widget _buildApiKeysSection(BuildContext context) {
-    if (login.apiKeys == null || login.apiKeys!.isEmpty) {
+    if (widget.login.apiKeys == null || widget.login.apiKeys!.isEmpty) {
       return const DetailTile(
         title: 'API Keys',
         content: 'No API keys',
@@ -172,7 +222,7 @@ class LoginDetailPage extends ConsumerWidget {
           Icon(Icons.vpn_key, color: Theme.of(context).colorScheme.secondary),
       title: const Text('API Keys',
           style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
-      children: login.apiKeys!.map((key) {
+      children: widget.login.apiKeys!.map((key) {
         final keyName = key.name;
         final keyValue = key.value;
 
@@ -187,18 +237,18 @@ class LoginDetailPage extends ConsumerWidget {
 
   void _copyAndCreateNew(BuildContext context, WidgetRef ref) {
     final newLogin = LoginModel(
-      name: '${login.name} (Copy)',
-      username: login.username,
-      password: login.password,
-      passwordHint: login.passwordHint,
-      url: login.url,
-      note: login.note,
-      tags: login.tags,
-      apiKeys: login.apiKeys,
-      isFavorite: login.isFavorite,
+      name: '${widget.login.name} (Copy)',
+      username: widget.login.username,
+      password: widget.login.password,
+      passwordHint: widget.login.passwordHint,
+      url: widget.login.url,
+      note: widget.login.note,
+      tags: widget.login.tags,
+      apiKeys: widget.login.apiKeys,
+      isFavorite: widget.login.isFavorite,
     );
 
-    _openForm(context, screenSize, allTagsMap, newLogin);
+    _openForm(context, widget.screenSize, widget.allTagsMap, newLogin);
   }
 
   void _openForm(
@@ -260,7 +310,9 @@ class LoginDetailPage extends ConsumerWidget {
 
   Future<void> _deleteLogin(BuildContext context, WidgetRef ref) async {
     try {
-      await ref.read(loginNotifierProvider.notifier).deleteLogin(login.id!);
+      await ref
+          .read(loginNotifierProvider.notifier)
+          .deleteLogin(widget.login.id!);
       if (context.mounted) {
         Navigator.of(context).pop();
         ScaffoldMessenger.of(context).showSnackBar(
