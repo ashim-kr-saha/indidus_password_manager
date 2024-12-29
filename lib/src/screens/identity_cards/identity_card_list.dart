@@ -69,11 +69,17 @@ class IdentityCardList extends ConsumerWidget {
               tags,
               allTagsMap),
         ),
-        const SizedBox(width: 20),
+        TweenAnimationBuilder(
+          duration: const Duration(milliseconds: 300),
+          tween: Tween<double>(begin: 0, end: 20),
+          builder: (context, double value, child) {
+            return SizedBox(width: value);
+          },
+        ),
         Expanded(
           flex: 2,
           child: _buildDetailView(selectedDetails, screenSize, allTagsMap),
-        )
+        ),
       ],
     );
   }
@@ -183,15 +189,32 @@ class IdentityCardList extends ConsumerWidget {
       Map<String, Tag> allTagsMap) {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
-        (context, index) => _buildIdentityCardListItem(
+        (context, index) => _buildAnimatedIdentityCardListItem(
             context,
             screenSize,
             ref,
             filteredIdentityCardItems[index],
             selectedIdentityCards,
-            allTagsMap),
+            allTagsMap,
+            index),
         childCount: filteredIdentityCardItems.length,
       ),
+    );
+  }
+
+  Widget _buildAnimatedIdentityCardListItem(
+      BuildContext context,
+      ScreenSize screenSize,
+      WidgetRef ref,
+      IdentityCardModel item,
+      Set<String> selectedIdentityCards,
+      Map<String, Tag> allTagsMap,
+      int index) {
+    return AnimatedIdentityCardListItem(
+      key: ValueKey(item.id),
+      index: index,
+      child: _buildIdentityCardListItem(
+          context, screenSize, ref, item, selectedIdentityCards, allTagsMap),
     );
   }
 
@@ -228,16 +251,42 @@ class IdentityCardList extends ConsumerWidget {
     }
   }
 
-  Widget _buildDetailView(IdentityCardModel? selectedDetails,
-      ScreenSize screenSize, Map<String, Tag> allTags) {
-    return Center(
+  Widget _buildDetailView(
+    IdentityCardModel? selectedDetails,
+    ScreenSize screenSize,
+    Map<String, Tag> allTags,
+  ) {
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 300),
+      transitionBuilder: (Widget child, Animation<double> animation) {
+        return FadeTransition(
+          opacity: animation,
+          child: SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(0.3, 0),
+              end: Offset.zero,
+            ).animate(CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeOutCubic,
+            )),
+            child: child,
+          ),
+        );
+      },
       child: selectedDetails == null
-          ? const Text('Select an item to see details',
-              style: TextStyle(fontSize: 16, color: Colors.grey))
+          ? const Center(
+              key: ValueKey('empty'),
+              child: Text(
+                'Select an item to see details',
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+            )
           : IdentityCardDetailPage(
+              key: ValueKey(selectedDetails.id),
               data: selectedDetails,
               screenSize: screenSize,
-              allTagsMap: allTags),
+              allTagsMap: allTags,
+            ),
     );
   }
 
@@ -431,8 +480,11 @@ class IdentityCardList extends ConsumerWidget {
   }
 
   void _openForm(
-      BuildContext context, ScreenSize screenSize, Map<String, Tag> allTagsMap,
-      {IdentityCardModel? identityCardData}) {
+    BuildContext context,
+    ScreenSize screenSize,
+    Map<String, Tag> allTagsMap, {
+    IdentityCardModel? identityCardData,
+  }) {
     if (screenSize == ScreenSize.small) {
       Navigator.push(
         context,
@@ -442,15 +494,33 @@ class IdentityCardList extends ConsumerWidget {
         ),
       );
     } else {
-      showDialog(
+      showGeneralDialog(
         context: context,
-        builder: (context) => AlertDialog(
-          content: SizedBox(
-            width: smallScreenWidth.toDouble(),
-            child: IdentityCardForm(
-                identityCardData: identityCardData, allTagsMap: allTagsMap),
-          ),
-        ),
+        barrierDismissible: true,
+        barrierLabel:
+            MaterialLocalizations.of(context).modalBarrierDismissLabel,
+        barrierColor: Colors.black54,
+        transitionDuration: const Duration(milliseconds: 300),
+        pageBuilder: (context, animation, secondaryAnimation) {
+          return FadeTransition(
+            opacity: animation,
+            child: ScaleTransition(
+              scale:
+                  Tween<double>(begin: 0.95, end: 1.0).animate(CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeOutCubic,
+              )),
+              child: AlertDialog(
+                content: SizedBox(
+                  width: smallScreenWidth.toDouble(),
+                  child: IdentityCardForm(
+                      identityCardData: identityCardData,
+                      allTagsMap: allTagsMap),
+                ),
+              ),
+            ),
+          );
+        },
       );
     }
   }
@@ -501,5 +571,89 @@ class IdentityCardList extends ConsumerWidget {
 
   Map<String, Tag> _createAllTagsMap(List<Tag> tags) {
     return Map.fromEntries(tags.map((tag) => MapEntry(tag.id!, tag)));
+  }
+}
+
+class AnimatedIdentityCardListItem extends StatefulWidget {
+  final int index;
+  final Widget child;
+
+  const AnimatedIdentityCardListItem({
+    super.key,
+    required this.index,
+    required this.child,
+  });
+
+  @override
+  State<AnimatedIdentityCardListItem> createState() =>
+      _AnimatedIdentityCardListItemState();
+}
+
+class _AnimatedIdentityCardListItemState
+    extends State<AnimatedIdentityCardListItem>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _fadeAnimation;
+  late final Animation<Offset> _slideAnimation;
+  late final Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 400),
+      vsync: this,
+    );
+
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(0.0, 0.8, curve: Curves.easeOut),
+    ));
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0.0, 0.1),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(0.0, 0.8, curve: Curves.easeOutCubic),
+    ));
+
+    _scaleAnimation = Tween<double>(
+      begin: 0.95,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(0.0, 0.8, curve: Curves.easeOutCubic),
+    ));
+
+    // Delay the animation start based on the item's index
+    Future.delayed(Duration(milliseconds: 30 * widget.index), () {
+      if (mounted) {
+        _controller.forward();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _fadeAnimation,
+      child: SlideTransition(
+        position: _slideAnimation,
+        child: ScaleTransition(
+          scale: _scaleAnimation,
+          child: widget.child,
+        ),
+      ),
+    );
   }
 }

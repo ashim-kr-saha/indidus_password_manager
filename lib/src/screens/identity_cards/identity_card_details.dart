@@ -10,7 +10,7 @@ import '../../widgets/detail_tile.dart';
 import '../../widgets/tag_view.dart';
 import 'identity_card_form.dart';
 
-class IdentityCardDetailPage extends ConsumerWidget {
+class IdentityCardDetailPage extends ConsumerStatefulWidget {
   final IdentityCardModel data;
   final ScreenSize screenSize;
   final Map<String, Tag> allTagsMap;
@@ -23,18 +23,69 @@ class IdentityCardDetailPage extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<IdentityCardDetailPage> createState() =>
+      _IdentityCardDetailPageState();
+}
+
+class _IdentityCardDetailPageState extends ConsumerState<IdentityCardDetailPage>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
+
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOut,
+    ));
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.1),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOutCubic,
+    ));
+
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(context, data.isFavorite ?? false, ref),
+      appBar: _buildAppBar(context, widget.data.isFavorite ?? false, ref),
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildDetailsList(context),
-              ],
+          child: FadeTransition(
+            opacity: _fadeAnimation,
+            child: SlideTransition(
+              position: _slideAnimation,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildDetailsList(context),
+                  ],
+                ),
+              ),
             ),
           ),
         ),
@@ -51,7 +102,7 @@ class IdentityCardDetailPage extends ConsumerWidget {
       title: Row(
         children: [
           Text(
-            data.name,
+            widget.data.name,
             style: const TextStyle(fontWeight: FontWeight.bold),
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
@@ -76,7 +127,8 @@ class IdentityCardDetailPage extends ConsumerWidget {
         ),
         IconButton(
           icon: const Icon(Icons.edit),
-          onPressed: () => _openForm(context, screenSize, allTagsMap, data),
+          onPressed: () => _openForm(
+              context, widget.screenSize, widget.allTagsMap, widget.data),
           tooltip: 'Edit',
         ),
         IconButton(
@@ -90,19 +142,19 @@ class IdentityCardDetailPage extends ConsumerWidget {
 
   void _copyAndCreateNew(BuildContext context) {
     final newData = IdentityCardModel(
-      name: '${data.name} (Copy)',
-      nameOnCard: data.nameOnCard,
-      identityCardNumber: data.identityCardNumber,
-      identityCardType: data.identityCardType,
-      expiryDate: data.expiryDate,
-      issueDate: data.issueDate,
-      country: data.country,
-      state: data.state,
-      note: data.note,
-      tags: data.tags,
-      isFavorite: data.isFavorite,
+      name: '${widget.data.name} (Copy)',
+      nameOnCard: widget.data.nameOnCard,
+      identityCardNumber: widget.data.identityCardNumber,
+      identityCardType: widget.data.identityCardType,
+      expiryDate: widget.data.expiryDate,
+      issueDate: widget.data.issueDate,
+      country: widget.data.country,
+      state: widget.data.state,
+      note: widget.data.note,
+      tags: widget.data.tags,
+      isFavorite: widget.data.isFavorite,
     );
-    _openForm(context, screenSize, allTagsMap, newData);
+    _openForm(context, widget.screenSize, widget.allTagsMap, newData);
   }
 
   void _openForm(
@@ -141,42 +193,42 @@ class IdentityCardDetailPage extends ConsumerWidget {
     final details = [
       {
         'title': 'Name on Card',
-        'content': data.nameOnCard,
+        'content': widget.data.nameOnCard,
         'icon': Icons.person,
       },
       {
         'title': 'Card Number',
-        'content': data.identityCardNumber,
+        'content': widget.data.identityCardNumber,
         'icon': Icons.credit_card,
       },
       {
         'title': 'Card Type',
-        'content': data.identityCardType,
+        'content': widget.data.identityCardType,
         'icon': Icons.card_travel,
       },
       {
         'title': 'Expiry Date',
-        'content': data.expiryDate,
+        'content': widget.data.expiryDate,
         'icon': Icons.calendar_month,
       },
       {
         'title': 'Issue Date',
-        'content': data.issueDate,
+        'content': widget.data.issueDate,
         'icon': Icons.calendar_month,
       },
       {
         'title': 'Country',
-        'content': data.country,
+        'content': widget.data.country,
         'icon': Icons.location_pin,
       },
       {
         'title': 'State',
-        'content': data.state,
+        'content': widget.data.state,
         'icon': Icons.location_pin,
       },
       {
         'title': 'Note',
-        'content': data.note,
+        'content': widget.data.note,
         'icon': Icons.note,
       },
     ];
@@ -200,7 +252,7 @@ class IdentityCardDetailPage extends ConsumerWidget {
             },
           ),
           const Divider(),
-          TagsView(tags: data.tags, allTagsMap: allTagsMap),
+          TagsView(tags: widget.data.tags, allTagsMap: widget.allTagsMap),
         ],
       ),
     );
@@ -234,7 +286,7 @@ class IdentityCardDetailPage extends ConsumerWidget {
     try {
       await ref
           .read(identityCardNotifierProvider.notifier)
-          .deleteIdentityCard(data.id!);
+          .deleteIdentityCard(widget.data.id!);
       if (context.mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(

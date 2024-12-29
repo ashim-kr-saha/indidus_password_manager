@@ -23,7 +23,8 @@ class IdentityCardForm extends ConsumerStatefulWidget {
   ConsumerState<IdentityCardForm> createState() => _IdentityCardFormState();
 }
 
-class _IdentityCardFormState extends ConsumerState<IdentityCardForm> {
+class _IdentityCardFormState extends ConsumerState<IdentityCardForm>
+    with SingleTickerProviderStateMixin {
   late TextEditingController nameController;
   late TextEditingController nameOnCardController;
   late TextEditingController identityCardNumberController;
@@ -35,6 +36,9 @@ class _IdentityCardFormState extends ConsumerState<IdentityCardForm> {
   late TextEditingController noteController;
   late bool isFavorite;
   late List<Tag> tags;
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
 
   @override
   void initState() {
@@ -59,10 +63,34 @@ class _IdentityCardFormState extends ConsumerState<IdentityCardForm> {
     isFavorite = identityCardData?.isFavorite ?? false;
     tags = identityCardData?.tags?.map((e) => widget.allTagsMap[e]!).toList() ??
         [];
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
+
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOut,
+    ));
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.1),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOutCubic,
+    ));
+
+    _animationController.forward();
   }
 
   @override
   void dispose() {
+    _animationController.dispose();
     nameController.dispose();
     nameOnCardController.dispose();
     identityCardNumberController.dispose();
@@ -87,123 +115,129 @@ class _IdentityCardFormState extends ConsumerState<IdentityCardForm> {
               ),
             )
           : null,
-      body: Column(
-        children: [
-          screenSize == ScreenSize.small
-              ? Container()
-              : Text(
-                  _isEditing() ? "Edit Identity Card" : "New Identity Card",
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.titleLarge,
+      body: FadeTransition(
+        opacity: _fadeAnimation,
+        child: SlideTransition(
+          position: _slideAnimation,
+          child: Column(
+            children: [
+              screenSize == ScreenSize.small
+                  ? Container()
+                  : Text(
+                      _isEditing() ? "Edit Identity Card" : "New Identity Card",
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        _buildTextField(
+                          nameController,
+                          'Name',
+                          Icons.person,
+                        ),
+                        _buildTextField(
+                          nameOnCardController,
+                          'Name on Card',
+                          Icons.person,
+                        ),
+                        _buildTextField(
+                          identityCardNumberController,
+                          'Card Number',
+                          Icons.credit_card,
+                        ),
+                        _buildTextField(
+                          identityCardTypeController,
+                          'Card Type',
+                          Icons.credit_card,
+                        ),
+                        _buildTextField(
+                          expiryDateController,
+                          'Expiry Date',
+                          Icons.calendar_month,
+                        ),
+                        _buildTextField(
+                          issueDateController,
+                          'Issue Date',
+                          Icons.calendar_month,
+                        ),
+                        _buildTextField(
+                          countryController,
+                          'Country',
+                          Icons.location_pin,
+                        ),
+                        _buildTextField(
+                          stateController,
+                          'State',
+                          Icons.location_pin,
+                        ),
+                        _buildTextField(
+                          noteController,
+                          'Note',
+                          Icons.note,
+                        ),
+                        SwitchListTile(
+                          title: const Text('Favorite'),
+                          value: isFavorite,
+                          onChanged: (value) {
+                            setState(() {
+                              isFavorite = value;
+                            });
+                          },
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TagInput(
+                            initialTags: tags,
+                            onTagsChanged: (data) {
+                              setState(() {
+                                tags = data;
+                              });
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                      ],
+                    ),
+                  ),
                 ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
+              ),
+              const Divider(height: 20, thickness: 2, color: Colors.grey),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _buildTextField(
-                      nameController,
-                      'Name',
-                      Icons.person,
-                    ),
-                    _buildTextField(
-                      nameOnCardController,
-                      'Name on Card',
-                      Icons.person,
-                    ),
-                    _buildTextField(
-                      identityCardNumberController,
-                      'Card Number',
-                      Icons.credit_card,
-                    ),
-                    _buildTextField(
-                      identityCardTypeController,
-                      'Card Type',
-                      Icons.credit_card,
-                    ),
-                    _buildTextField(
-                      expiryDateController,
-                      'Expiry Date',
-                      Icons.calendar_month,
-                    ),
-                    _buildTextField(
-                      issueDateController,
-                      'Issue Date',
-                      Icons.calendar_month,
-                    ),
-                    _buildTextField(
-                      countryController,
-                      'Country',
-                      Icons.location_pin,
-                    ),
-                    _buildTextField(
-                      stateController,
-                      'State',
-                      Icons.location_pin,
-                    ),
-                    _buildTextField(
-                      noteController,
-                      'Note',
-                      Icons.note,
-                    ),
-                    SwitchListTile(
-                      title: const Text('Favorite'),
-                      value: isFavorite,
-                      onChanged: (value) {
-                        setState(() {
-                          isFavorite = value;
-                        });
-                      },
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TagInput(
-                        initialTags: tags,
-                        onTagsChanged: (data) {
-                          setState(() {
-                            tags = data;
-                          });
-                        },
+                    if (_isEditing())
+                      TextButton(
+                        onPressed: () => _showDeleteConfirmation(context),
+                        child: const Text('Delete',
+                            style: TextStyle(color: Colors.red)),
                       ),
+                    Row(
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text('Cancel'),
+                        ),
+                        const SizedBox(width: 8),
+                        ElevatedButton(
+                          onPressed: _saveIdentityCard,
+                          child: Text(_isEditing() ? 'Update' : 'Add'),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 16),
                   ],
                 ),
               ),
-            ),
+            ],
           ),
-          const Divider(height: 20, thickness: 2, color: Colors.grey),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                if (_isEditing())
-                  TextButton(
-                    onPressed: () => _showDeleteConfirmation(context),
-                    child: const Text('Delete',
-                        style: TextStyle(color: Colors.red)),
-                  ),
-                Row(
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text('Cancel'),
-                    ),
-                    const SizedBox(width: 8),
-                    ElevatedButton(
-                      onPressed: _saveIdentityCard,
-                      child: Text(_isEditing() ? 'Update' : 'Add'),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
