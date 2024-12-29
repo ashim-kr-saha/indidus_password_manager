@@ -56,7 +56,7 @@ class _LoginFormState extends ConsumerState<LoginForm>
 
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 400),
+      duration: const Duration(milliseconds: 300),
     );
 
     _fadeAnimation = Tween<double>(
