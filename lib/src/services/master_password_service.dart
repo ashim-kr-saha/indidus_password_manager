@@ -2,7 +2,10 @@ import '../data/secure_storage.dart';
 
 class MasterPasswordService {
   static const String _masterPasswordKey = 'master_password';
-  final SecureStorage _secureStorage = SecureStorage();
+  final SecureStorage _secureStorage;
+
+  MasterPasswordService([SecureStorage? secureStorage])
+      : _secureStorage = secureStorage ?? SecureStorage();
 
   Future<bool> isMasterPasswordSet() async {
     final masterPassword = await _secureStorage.read(_masterPasswordKey);
